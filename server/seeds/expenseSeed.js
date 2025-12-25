@@ -14,6 +14,7 @@ mongoose
 
 const data=[
   {
+    "userId":'694bd9870d772e090cc6c65f',
     "amount": 120,
     "category": "Food",
     "paymentMode": "UPI",
@@ -21,6 +22,7 @@ const data=[
     "date": "2024-06-18"
   },
   {
+    "userId":'694bd9870d772e090cc6c65f',
     "amount": 450,
     "category": "Shopping",
     "paymentMode": "Debit Card",
@@ -28,6 +30,7 @@ const data=[
     "date": "2024-06-17"
   },
   {
+    "userId":'694bd9870d772e090cc6c65f',
     "amount": 1500,
     "category": "Utilities",
     "paymentMode": "UPI",
@@ -35,6 +38,7 @@ const data=[
     "date": "2024-06-15"
   },
   {
+    "userId":'694bd9870d772e090cc6c65f',
     "amount": 300,
     "category": "Travel",
     "paymentMode": "Cash",
@@ -42,6 +46,7 @@ const data=[
     "date": "2024-06-14"
   },
   {
+    "userId":'694bd9870d772e090cc6c65f',
     "amount": 2500,
     "category": "Rent",
     "paymentMode": "Net Banking",
@@ -49,6 +54,7 @@ const data=[
     "date": "2024-06-01"
   },
   {
+    "userId":'694bd9870d772e090cc6c65f',
     "amount": 999,
     "category": "Entertainment",
     "paymentMode": "Credit Card",
@@ -56,6 +62,7 @@ const data=[
     "date": "2024-06-12"
   },
   {
+    "userId":'694bd9870d772e090cc6c65f',
     "amount": 80,
     "category": "Food",
     "paymentMode": "Cash",
@@ -66,6 +73,7 @@ const data=[
 
 
 async function insertData(){
+    await ExpenseModel.deleteMany({});
     const data_ins=await ExpenseModel.insertMany(data);
     console.log(data_ins);
 }

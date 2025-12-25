@@ -1,7 +1,13 @@
 const mongoose = require("mongoose");
+const User=require('./User.js');
 
 const ExpenseSchema = new mongoose.Schema({
-  
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+    index: true, 
+  },
 
   amount: {
     type: Number,

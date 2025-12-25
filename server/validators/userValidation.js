@@ -28,4 +28,24 @@ const signupSchema = Joi.object({
     }),
 });
 
-module.exports = signupSchema;
+const LoginSchema = Joi.object({
+  username: Joi.string()
+    .trim()
+    .min(3)
+    .max(30)
+    .required()
+    .messages({
+      "string.empty": "Username is required",
+      "string.min": "Username must be at least 3 characters",
+    }),
+
+  password: Joi.string()
+    .min(8)
+    .required()
+    .messages({
+      "string.min": "Password must be at least 8 characters",
+      "string.empty": "Password is required",
+    }),
+});
+
+module.exports = {signupSchema,LoginSchema};

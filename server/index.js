@@ -1,6 +1,9 @@
+require("dotenv").config();
 const express=require('express');
 const cors=require('cors');
 const mongoose=require('mongoose');
+const cookieParser = require("cookie-parser");
+
 
 
 //route handlers
@@ -17,7 +20,7 @@ const app=express();
 
 
 mongoose
-  .connect("mongodb://localhost:27017/ExpenseIQ")
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB connection successful!");
   })
@@ -33,6 +36,7 @@ app.use(cors({
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser());
 
 app.use(ExpenseRouteHandlers);
 app.use(UserRouteHandlers);
@@ -57,6 +61,6 @@ app.use((err,req,res,next)=>{
  
 })
 
-app.listen(3000,()=>{
+app.listen(process.env.PORT,()=>{
     console.log("server is running in localhost 3000");
 })
