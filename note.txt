@@ -5,3 +5,916 @@ userId: {
     required: true,
     index: true, 
   },
+
+
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
+router.post(
+  "/api/login",
+  validateUserLogin,
+  wrapAsync(async (req, res) => {
+    const { username, password } = req.body;
+
+    // 1️⃣ Find user by username
+    const user = await userModel.findOne({ username });
+
+    if (!user) {
+      throw new AppError("Wrong username or password", 401);
+    }
+
+    // 2️⃣ Compare passwords
+    const isValidPassword = await bcrypt.compare(
+      password,
+      user.password
+    );
+
+    if (!isValidPassword) {
+      throw new AppError("Wrong username or password", 401);
+    }
+
+    // 3️⃣ Create JWT
+    const token = jwt.sign(
+      { id: user._id, username: user.username },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    // 4️⃣ Send JWT in HTTP-only cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: false // true in production (HTTPS)
+    });
+
+    res.json({
+      success: true,
+      data: {
+        message: "Login successful"
+      }
+    });
+  })
+);
+
+577685
+
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+axios.defaults.withCredentials = true;
+
+export default function Login() {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    username: "",
+    password: ""
+  });
+
+  const [message, setMessage] = useState("");
+
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await axios.post(
+        "http://localhost:3000/api/login",
+        formData
+      );
+
+      if (res.data.success) {
+        navigate("/dashboard");
+      }else{
+        setMessage("login failed");
+      }
+    } catch (err) {
+      setMessage(
+        err.response?.data?.error?.message || "Login failed"
+      );
+    }
+  };
+
+  return (
+    <div>
+      <h1>Login</h1>
+
+      {message && <p style={{ color: "red" }}>{message}</p>}
+
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="username">Username</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          value={formData.username}
+          onChange={handleChange}
+          required
+        />
+
+        <label htmlFor="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+        />
+
+        <button type="submit">LOGIN</button>
+      </form>
+    </div>
+  );
+}
+
+dashboard.jsx
+import { useState, useEffect } from "react";
+import axios from "axios";
+import FormFields from "./FormFields";
+import ShowData from "./ShowData";
+import Navbar from "./Navbar";
+
+axios.defaults.withCredentials = true;
+
+
+
+export default function Dashboard() {
+    const [data, setData] = useState([]);
+    const [refresh,setRefresh]=useState(false);
+    const [message,setMessage]=useState("");
+
+    useEffect(() => {
+        async function getData(){
+            try {
+                const newdata = await axios.get("http://localhost:3000/api/expenses");
+                setData(newdata.data.data.expenses);
+            } catch (err) {
+                console.log(err);
+            }
+        }
+
+        getData();
+    },[refresh])
+    
+return (
+    < div >
+    <Navbar setMessage={setMessage}></Navbar>
+        <FormFields setRefresh={setRefresh}></FormFields>
+        <ShowData data={data}></ShowData>
+    </div >
+)
+
+
+}
+formFields.jsximport { useState } from "react";
+import axios from "axios";
+
+axios.defaults.withCredentials = true;
+
+export default function FormFields({setRefresh}) {
+    const [formData, setFormData] = useState({
+        amount: "",
+        note: "",
+        paymentMode: "",
+        category: "",
+        date: ""
+    });
+
+    const [message, setMessage] = useState("");
+
+    const handleChange = (e) => {
+        setFormData((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const res = await axios.post(
+                "http://localhost:3000/api/expenses",
+                {
+                    ...formData,
+                    amount: Number(formData.amount)
+                }
+            );
+
+            if (res.data.success) {
+                setMessage("Expense added successfully");
+                setFormData({
+                    amount: "",
+                    note: "",
+                    paymentMode: "",
+                    category: "",
+                    date: ""
+                });
+                setRefresh((prev)=>{
+                    return !prev;
+                })
+            }
+        } catch (err) {
+            setMessage(
+                err.response?.data?.error?.message || "An error occurred"
+            );
+        }
+    };
+
+    return (
+        <div>
+            <h1>Dashboard</h1>
+
+            {message && <p>{message}</p>}
+
+            <form onSubmit={handleSubmit}>
+                <label htmlFor="amount">Amount</label>
+                <input
+                    type="number"
+                    id="amount"
+                    name="amount"
+                    value={formData.amount}
+                    onChange={handleChange}
+                    required
+                />
+
+                <label htmlFor="note">Note</label>
+                <input
+                    type="text"
+                    id="note"
+                    name="note"
+                    value={formData.note}
+                    onChange={handleChange}
+                />
+
+                <label htmlFor="date">Date</label>
+                <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    value={formData.date}
+                    onChange={handleChange}
+                    required
+                />
+
+                <label htmlFor="category">Category</label>
+                <select
+                    name="category"
+                    id="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    required
+                >
+                    <option value="">Select</option>
+                    <option value="Food">Food</option>
+                    <option value="Utilities">Utilities</option>
+                    <option value="Shopping">Shopping</option>
+                    <option value="Rent">Rent</option>
+                    <option value="Entertainment">Entertainment</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <label htmlFor="paymentMode">Payment Mode</label>
+                <select
+                    name="paymentMode"
+                    id="paymentMode"
+                    value={formData.paymentMode}
+                    onChange={handleChange}
+                    required
+                >
+                    <option value="">Select</option>
+                    <option value="Cash">Cash</option>
+                    <option value="UPI">UPI</option>
+                    <option value="Debit Card">Debit Card</option>
+                    <option value="Credit Card">Credit Card</option>
+                    <option value="Net Banking">Net Banking</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <button type="submit">ADD EXPENSE</button>
+            </form>
+        </div>
+    );
+}
+
+showdata.jsximport Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import { useState } from "react";
+
+export default function ShowData({ data }) {
+    return (
+        <div>
+            <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            
+                            <TableCell align="right">Date</TableCell>
+                            <TableCell align="right">Amount</TableCell>
+                            <TableCell align="right">Category</TableCell>
+                            <TableCell align="right">Note</TableCell>
+                            <TableCell align="right">PaymentMode</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {data.map((row) => (
+                            <TableRow
+                                key={row.name}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                            >
+                                
+                                <TableCell align="right">{row.date}</TableCell>
+                                <TableCell align="right">{row.amount}</TableCell>
+                                <TableCell align="right">{row.category}</TableCell>
+                                <TableCell align="right">{row.note}</TableCell>
+                                <TableCell align="right">{row.paymentMode}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </div>
+    )
+}
+
+
+UpdatePopup.jsxexport default function UpdatePopup({handleSubmit,isVisible,updateData}){
+    return(
+        <div style={{"display":isVisible?block:none}}>
+            <form onSubmit={handleSubmit} className="expense-form">
+                <div className="form-grid">
+                    <div className="form-field">
+                        <label htmlFor="amount" className="form-label">
+                            Amount
+                        </label>
+                     
+                            <input
+                                type="number"
+                                id="amount"
+                                name="amount"
+                                value={updateData.amount}
+                                onChange={handleChange}
+                                required
+                                className="form-input with-currency"
+                                placeholder="0.00"
+                            />
+                        
+
+                    <div className="form-field">
+                        <label htmlFor="date" className="form-label">
+                            Date
+                        </label>
+                        <input
+                            type="date"
+                            id="date"
+                            name="date"
+                            value={updateData.date}
+                            onChange={handleChange}
+                            required
+                            className="form-input"
+                        />
+                    </div>
+
+                    <div className="form-field">
+                        <label htmlFor="category" className="form-label">
+                           
+                            Category
+                        </label>
+                        <div className="select-wrapper">
+                            <select
+                                name="category"
+                                id="category"
+                                value={updateData.category}
+                                onChange={handleChange}
+                                required
+                                className="form-select"
+                            >
+                                <option value="">Select Category</option>
+                                <option value="Food">🍔 Food</option>
+                                <option value="Utilities">💡 Utilities</option>
+                                <option value="Shopping">🛍️ Shopping</option>
+                                <option value="Rent">🏠 Rent</option>
+                                <option value="Entertainment">🎬 Entertainment</option>
+                                <option value="Other">📦 Other</option>
+                            </select>
+                
+                        </div>
+                    </div>
+
+                    <div className="form-field">
+                        <label htmlFor="paymentMode" className="form-label">
+                    
+                            Payment Mode
+                        </label>
+                        <div className="select-wrapper">
+                            <select
+                                name="paymentMode"
+                                id="paymentMode"
+                                value={updateData.paymentMode}
+                                onChange={handleChange}
+                                required
+                                className="form-select"
+                            >
+                                <option value="">Select Payment Mode</option>
+                                <option value="Cash">💵 Cash</option>
+                                <option value="UPI">📱 UPI</option>
+                                <option value="Debit Card">💳 Debit Card</option>
+                                <option value="Credit Card">💳 Credit Card</option>
+                                <option value="Net Banking">🏦 Net Banking</option>
+                                <option value="Other">💼 Other</option>
+                            </select>
+                        
+                        </div>
+                    </div>
+                </div>
+
+                <div className="form-field full-width">
+                    <label htmlFor="note" className="form-label">
+                       
+                        Note (Optional)
+                    </label>
+                    <textarea
+                        id="note"
+                        name="note"
+                        value={updateData.note}
+                        onChange={handleChange}
+                        className="form-textarea"
+                        placeholder="Add any additional details about this expense..."
+                        rows="3"
+                    />
+                </div>
+
+                <button type="submit" className="submit-btn-form">
+                   
+                    Add Expense
+                </button>
+            </div>
+            </form>
+        </div>
+    )
+}
+
+filterform.jsx
+import { useState } from "react";
+
+export default function FilterForm({handleSubmit}) {
+
+    const [formData, setFormData] = useState({
+        category: "",
+        paymentMode: "",
+        from: "",
+        to: ""
+    });
+
+    const handleChange=(evt)=>{
+        setFormData((prev)=>{
+            return {...prev,[evt.target.name]:evt.target.value};
+        })
+    }
+
+    const onSubmit=(evt)=>{
+        evt.preventDefault();
+        console.log(formData);
+       // setFilterForm(formData);
+        handleSubmit(formData);
+    }
+    return (
+        <div>
+            <form onSubmit={onSubmit}>
+                <select
+                    name="category"
+                    id="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                   
+                    className="form-select"
+                >
+                    <option value="">Select Category</option>
+                    <option value="Food">🍔 Food</option>
+                    <option value="Utilities">💡 Utilities</option>
+                    <option value="Shopping">🛍️ Shopping</option>
+                    <option value="Rent">🏠 Rent</option>
+                    <option value="Entertainment">🎬 Entertainment</option>
+                    <option value="Other">📦 Other</option>
+                </select>
+
+                <select
+                    name="paymentMode"
+                    id="paymentMode"
+                    value={formData.paymentMode}
+                    onChange={handleChange}
+                
+                    className="form-select"
+                >
+                    <option value="">Select Payment Mode</option>
+                    <option value="Cash">💵 Cash</option>
+                    <option value="UPI">📱 UPI</option>
+                    <option value="Debit Card">💳 Debit Card</option>
+                    <option value="Credit Card">💳 Credit Card</option>
+                    <option value="Net Banking">🏦 Net Banking</option>
+                    <option value="Other">💼 Other</option>
+                </select>
+
+                <input
+                    type="date"
+                    id="date"
+                    name="from"
+                    value={formData.from}
+                    onChange={handleChange}
+                   
+                    className="form-input"
+                />
+
+
+                <input
+                    type="date"
+                    id="date"
+                    name="to"
+                    value={formData.to}
+                    onChange={handleChange}
+                   
+                    className="form-input"
+                />
+
+                <button type="submit">Submit</button>
+
+            </form >
+        </div >
+    )
+}
+
+filter.jsx
+import { useState } from "react";
+import axios from "axios";
+import Navbar from "./Navbar";
+import FilterForm from "./FilterForm";
+import ShowData from "./ShowData";
+import UpdatePopup from "./UpdatePopup";
+
+export default function Filter() {
+    const [message, setMessage] = useState("");//for messages obtained from backend
+    const [data, setData] = useState([]);//for getting the filtered data
+    const [updateData, setUpdateData] = useState(null);//for getting the updated data
+    const [isVisible, setIsVisible] = useState(false);
+    const [refresh, setRefresh] = useState(false);
+
+
+    const handleSubmit = async (formdata) => {
+
+        try {
+            // console.log(filterForm);
+            const res = await axios.get("http://localhost:3000/api/expenses/filter", { params: { ...formdata } });
+            if (res.data.success) {
+                setData(res.data.data.expenses);
+                setMessage(res.data.data.message);
+            } else {
+                setMessage("An error occured");
+            }
+        } catch (err) {
+            setMessage("An error occurred");
+        }
+    }
+
+    const handleDelete = async (id) => {
+        try {
+            await axios.delete(`http://localhost:3000/api/expenses/${id}`);
+            setData(prev => prev.filter(item => item._id !== id));
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleUpdate = async (row) => {
+        setUpdateData(row);
+        setIsVisible(true);
+    }
+
+    const handleUpdateSubmit = async (evt) => {
+        evt.preventDefault(); // always first
+
+        try {
+            console.log(updateData);
+            const res = await axios.put(
+                `http://localhost:3000/api/expenses/${updateData._id}`,
+                updateData
+            );
+
+            if (res.data.success) {
+                setMessage(res.data.data.message);
+                setIsVisible(false);
+                setUpdateData(null);
+                setRefresh(prev => !prev);
+            } else {
+                setMessage("An error occurred while updating");
+            }
+
+        } catch (err) {
+            setMessage("An error occurred while updating");
+            console.error(err);
+        }
+    };
+
+
+    const onClose = async () => {
+        setIsVisible(false);
+    }
+
+    return (
+        <div>
+            <Navbar setMessage={setMessage}></Navbar>
+            <h1>Filter.jsx</h1>
+            {message}
+            <UpdatePopup isVisible={isVisible} updateData={updateData} setUpdateData={setUpdateData} handleUpdateSubmit={handleUpdateSubmit} onClose={onClose}></UpdatePopup>
+            <FilterForm handleSubmit={handleSubmit}></FilterForm>
+            <ShowData data={data} handleDelete={handleDelete} handleUpdate={handleUpdate}></ShowData>
+        </div>
+    )
+}
+
+UpdatePopup.jsx
+export default function UpdatePopup({
+    isVisible,
+    updateData,
+    setUpdateData,
+    handleUpdateSubmit,
+    onClose
+}) {
+    if (!isVisible) return null;
+
+    const handleChange = (e) => {
+        setUpdateData(prev => ({
+            ...prev,
+            [e.target.name]: e.target.value
+        }));
+    };
+
+
+    return (
+        <div className="popup-overlay">
+            <div className="popup-container">
+
+                <h2 className="popup-title">Update Expense</h2>
+
+                <form onSubmit={handleUpdateSubmit} className="expense-form">
+
+                    <div className="form-field">
+                        <label>Amount</label>
+                        <input
+                            type="number"
+                            name="amount"
+                            value={updateData.amount}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-field">
+                        <label>Date</label>
+                        <input
+                            type="date"
+                            name="date"
+                            value={updateData.date}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-field">
+                        <label>Category</label>
+                        <select
+                            name="category"
+                            value={updateData.category}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="">Select</option>
+                            <option value="Food">Food</option>
+                            <option value="Utilities">Utilities</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Rent">Rent</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div className="form-field">
+                        <label>Payment Mode</label>
+                        <select
+                            name="paymentMode"
+                            value={updateData.paymentMode}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="">Select</option>
+                            <option value="Cash">Cash</option>
+                            <option value="UPI">UPI</option>
+                            <option value="Debit Card">Debit Card</option>
+                            <option value="Credit Card">Credit Card</option>
+                            <option value="Net Banking">Net Banking</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div className="form-field">
+                        <label>Note</label>
+                        <textarea
+                            name="note"
+                            value={updateData.note}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="popup-actions">
+                        <button type="submit" className="btn-primary">
+                            Update
+                        </button>
+
+                        <button
+                            type="button"
+                            className="btn-secondary"
+                            onClick={onClose}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    );
+}
+
+showdata.jsximport axios from "axios";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import { useState } from "react";
+import "../styles/showdata.css";
+
+export default function ShowData({ data,handleDelete,handleUpdate }) {
+    
+
+    return (
+        <div className="show-data-container">
+            <TableContainer 
+                component={Paper}
+                sx={{
+                    borderRadius: '16px',
+                    boxShadow: 'none',
+                    border: '1px solid #e5e7eb',
+                    overflow: 'hidden'
+                }}
+            >
+                <Table 
+                    sx={{ 
+                        minWidth: 650,
+                        '& .MuiTableCell-root': {
+                            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
+                        }
+                    }} 
+                    aria-label="expense table"
+                >
+                    <TableHead>
+                        <TableRow
+                            sx={{
+                                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                '& .MuiTableCell-head': {
+                                    color: 'white',
+                                    fontWeight: 700,
+                                    fontSize: '0.9375rem',
+                                    letterSpacing: '0.025em',
+                                    textTransform: 'uppercase',
+                                    borderBottom: 'none',
+                                    padding: '1.25rem 1rem'
+                                }
+                            }}
+                        >
+                            <TableCell align="right" sx={{ borderTopLeftRadius: '16px' }}>Date</TableCell>
+                            <TableCell align="right">Amount</TableCell>
+                            <TableCell align="right">Category</TableCell>
+                            <TableCell align="right">Note</TableCell>
+                            <TableCell align="right">Payment Mode</TableCell>
+                            <TableCell align="right">Update</TableCell>
+                            <TableCell align="right"  sx={{ borderTopRightRadius: '16px' }}>Delete</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {data.map((row, index) => (
+                            <TableRow
+                                key={row.name || index}
+                                sx={{ 
+                                    '&:last-child td, &:last-child th': { border: 0 },
+                                    '&:hover': {
+                                        background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
+                                        transition: 'all 0.3s ease'
+                                    },
+                                    '& .MuiTableCell-body': {
+                                        fontSize: '0.9375rem',
+                                        color: '#374151',
+                                        padding: '1rem',
+                                        borderBottom: '1px solid #f3f4f6'
+                                    }
+                                }}
+                            >
+                                <TableCell 
+                                    align="right"
+                                    sx={{
+                                        fontWeight: 600,
+                                        color: '#059669 !important'
+                                    }}
+                                >
+                                    {row.date}
+                                </TableCell>
+                                <TableCell 
+                                    align="right"
+                                    sx={{
+                                        fontWeight: 700,
+                                        fontSize: '1rem !important',
+                                        color: '#10b981 !important'
+                                    }}
+                                >
+                                    ₹{row.amount}
+                                </TableCell>
+                                <TableCell 
+                                    align="right"
+                                    sx={{
+                                        '& span': {
+                                            background: '#ecfdf5',
+                                            padding: '0.375rem 0.75rem',
+                                            borderRadius: '8px',
+                                            fontSize: '0.875rem',
+                                            fontWeight: 600,
+                                            color: '#059669',
+                                            display: 'inline-block'
+                                        }
+                                    }}
+                                >
+                                    <span>{row.category}</span>
+                                </TableCell>
+                                <TableCell 
+                                    align="right"
+                                    sx={{
+                                        fontStyle: row.note ? 'normal' : 'italic',
+                                        color: row.note ? '#374151 !important' : '#9ca3af !important'
+                                    }}
+                                >
+                                    {row.note || 'No note'}
+                                </TableCell>
+                                <TableCell 
+                                    align="right"
+                                    sx={{
+                                        '& span': {
+                                            background: 'linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)',
+                                            padding: '0.375rem 0.75rem',
+                                            borderRadius: '8px',
+                                            fontSize: '0.875rem',
+                                            fontWeight: 600,
+                                            color: '#374151',
+                                            display: 'inline-block'
+                                        }
+                                    }}
+                                >
+                                    <span>{row.paymentMode}</span>
+                                </TableCell>
+                                <TableCell> 
+                                    <button onClick={()=>{handleUpdate(row)}}>Update</button>
+                                </TableCell>
+                                <TableCell>
+                                    <button onClick={()=>{handleDelete(row._id)}}>Delete</button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+
+            {data.length === 0 && (
+                <div className="empty-state">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <h3>No expenses yet</h3>
+                    <p>Start tracking your expenses by adding your first entry above</p>
+                </div>
+            )}
+        </div>
+    );
+}
+

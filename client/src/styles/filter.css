@@ -1,0 +1,579 @@
+/* ============================================
+   FILTER FORM STYLES - CORRECTED
+   ============================================ */
+
+.filter-form-container {
+  width: 100%;
+}
+
+.filter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #374151;
+  letter-spacing: 0.01em;
+}
+
+.filter-label svg {
+  width: 18px;
+  height: 18px;
+  color: #0891b2;
+  flex-shrink: 0;
+}
+
+/* Filter Input */
+.filter-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 1rem;
+  color: #111827;
+  background: #f9fafb;
+  transition: all 0.3s ease;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.filter-input:hover {
+  border-color: #d1d5db;
+  background: white;
+}
+
+.filter-input:focus {
+  border-color: #0891b2;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(8, 145, 178, 0.1);
+}
+
+/* Date Input Specific for Filter */
+.filter-input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(160deg) brightness(97%) contrast(97%);
+}
+
+/* Filter Select with wrapper */
+.filter-field .select-wrapper {
+  position: relative;
+}
+
+.filter-select {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  padding-right: 3rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 1rem;
+  color: #111827;
+  background: #f9fafb;
+  transition: all 0.3s ease;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  box-sizing: border-box;
+}
+
+.filter-select:hover {
+  border-color: #d1d5db;
+  background: white;
+}
+
+.filter-select:focus {
+  border-color: #0891b2;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(8, 145, 178, 0.1);
+}
+
+.filter-select option {
+  padding: 0.5rem;
+}
+
+.filter-field .select-wrapper .select-arrow {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  color: #6b7280;
+  pointer-events: none;
+}
+
+/* Filter Submit Button */
+.filter-submit-btn {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  box-sizing: border-box;
+}
+
+.filter-submit-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.filter-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(8, 145, 178, 0.4);
+  background: linear-gradient(135deg, #0e7490 0%, #155e75 100%);
+}
+
+.filter-submit-btn:active {
+  transform: translateY(0);
+}
+
+/* ============================================
+   UPDATE POPUP STYLES - CORRECTED
+   ============================================ */
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+  padding: 1rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.popup-container {
+  background: white;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 650px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem;
+  border-bottom: 2px solid #f3f4f6;
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.popup-header-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.popup-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  flex-shrink: 0;
+}
+
+.popup-icon svg {
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+
+.popup-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.popup-close {
+  width: 40px;
+  height: 40px;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.popup-close svg {
+  width: 20px;
+  height: 20px;
+  color: #6b7280;
+}
+
+.popup-close:hover {
+  background: #fef2f2;
+  border-color: #fecaca;
+  transform: scale(1.05);
+}
+
+.popup-close:hover svg {
+  color: #dc2626;
+}
+
+.popup-form {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.popup-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.popup-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.popup-form-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.popup-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #374151;
+  letter-spacing: 0.01em;
+}
+
+.popup-label svg {
+  width: 18px;
+  height: 18px;
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+.popup-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.popup-input-wrapper .currency-symbol {
+  position: absolute;
+  left: 1rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #10b981;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.popup-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 1rem;
+  color: #111827;
+  background: #f9fafb;
+  transition: all 0.3s ease;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.popup-input.with-currency {
+  padding-left: 2.5rem;
+}
+
+.popup-input::placeholder {
+  color: #9ca3af;
+}
+
+.popup-input:hover {
+  border-color: #d1d5db;
+  background: white;
+}
+
+.popup-input:focus {
+  border-color: #10b981;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+}
+
+/* Date Input Specific for Popup */
+.popup-input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(121deg) brightness(97%) contrast(97%);
+}
+
+.popup-select-wrapper {
+  position: relative;
+}
+
+.popup-select {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  padding-right: 3rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 1rem;
+  color: #111827;
+  background: #f9fafb;
+  transition: all 0.3s ease;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  box-sizing: border-box;
+}
+
+.popup-select:hover {
+  border-color: #d1d5db;
+  background: white;
+}
+
+.popup-select:focus {
+  border-color: #10b981;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+}
+
+.popup-select option {
+  padding: 0.5rem;
+}
+
+.popup-select-wrapper .select-arrow {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  color: #6b7280;
+  pointer-events: none;
+}
+
+.popup-textarea {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 1rem;
+  color: #111827;
+  background: #f9fafb;
+  transition: all 0.3s ease;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.popup-textarea::placeholder {
+  color: #9ca3af;
+}
+
+.popup-textarea:hover {
+  border-color: #d1d5db;
+  background: white;
+}
+
+.popup-textarea:focus {
+  border-color: #10b981;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+}
+
+.popup-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.popup-btn-update,
+.popup-btn-cancel {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-sizing: border-box;
+}
+
+.popup-btn-update {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.popup-btn-update svg {
+  width: 20px;
+  height: 20px;
+}
+
+.popup-btn-update:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.popup-btn-update:active {
+  transform: translateY(0);
+}
+
+.popup-btn-cancel {
+  background: white;
+  color: #6b7280;
+  border: 2px solid #e5e7eb;
+}
+
+.popup-btn-cancel svg {
+  width: 20px;
+  height: 20px;
+}
+
+.popup-btn-cancel:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+  color: #374151;
+  transform: translateY(-2px);
+}
+
+.popup-btn-cancel:active {
+  transform: translateY(0);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+  .filter-grid,
+  .popup-form-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .popup-container {
+    max-width: 100%;
+    margin: 0.5rem;
+    max-height: 95vh;
+  }
+
+  .popup-header {
+    padding: 1.5rem;
+  }
+
+  .popup-form {
+    padding: 1.5rem;
+  }
+
+  .popup-title {
+    font-size: 1.25rem;
+  }
+
+  .popup-actions {
+    flex-direction: column;
+  }
+
+  .filter-submit-btn {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .popup-header-content {
+    gap: 0.75rem;
+  }
+
+  .popup-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .popup-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .filter-form {
+    gap: 1.25rem;
+  }
+
+  .filter-grid {
+    gap: 1rem;
+  }
+}

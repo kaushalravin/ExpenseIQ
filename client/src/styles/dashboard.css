@@ -1,0 +1,221 @@
+/* Dashboard Container */
+.dashboard-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+}
+
+/* Dashboard Header */
+.dashboard-header {
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.header-left {
+  flex-shrink: 0;
+}
+
+.header-center {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.header-icon {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  flex-shrink: 0;
+}
+
+.header-icon svg {
+  width: 32px;
+  height: 32px;
+  color: white;
+}
+
+.header-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.header-subtitle {
+  font-size: 0.9375rem;
+  color: #6b7280;
+  margin: 0.25rem 0 0 0;
+}
+
+.header-right {
+  flex-shrink: 0;
+  min-width: 200px;
+}
+
+.header-message {
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  border: 1px solid #10b981;
+  border-radius: 12px;
+  color: #059669;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Main Content */
+.dashboard-main {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Dashboard Sections */
+.dashboard-section {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.dashboard-section:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.section-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.01em;
+}
+
+.section-description {
+  font-size: 0.9375rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.section-content {
+  /* Content wrapper for child components */
+}
+
+/* Form Section Specific */
+.form-section-wrapper {
+  border-top: 4px solid #10b981;
+}
+
+/* Data Section Specific */
+.data-section-wrapper {
+  border-top: 4px solid #059669;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .header-content {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .header-left {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .header-center {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .header-right {
+    width: 100%;
+  }
+
+  .dashboard-main {
+    padding: 1.5rem;
+  }
+
+  .dashboard-section {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .header-content {
+    padding: 1rem;
+  }
+
+  .header-title {
+    font-size: 1.5rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.875rem;
+  }
+
+  .header-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .header-icon svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .dashboard-main {
+    padding: 1rem;
+  }
+
+  .dashboard-section {
+    padding: 1.25rem;
+    border-radius: 16px;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+  }
+
+  .section-description {
+    font-size: 0.875rem;
+  }
+}
+
+/* Additional utility classes for child components */
+.dashboard-section .section-content > * {
+  /* Ensure child components have proper spacing */
+}
