@@ -71,6 +71,8 @@ export default function FormFields({ setRefresh, editingExpense }) {
                 });
 
                 setRefresh(prev => !prev);
+            }else{
+              setMessage(res.data.error.message);  
             }
 
         } catch (err) {

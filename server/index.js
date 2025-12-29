@@ -9,6 +9,7 @@ const cookieParser = require("cookie-parser");
 //route handlers
 const ExpenseRouteHandlers=require('./routes/ExpenseRoutes');
 const UserRouteHandlers=require('./routes/UserRoutes');
+const ExpenseAnalyticsHandlers=require('./routes/AnalyticsRoutes');
 
 //errorhandlers
 const AppError = require('./utilities/AppError');
@@ -40,6 +41,7 @@ app.use(cookieParser());
 
 app.use(ExpenseRouteHandlers);
 app.use(UserRouteHandlers);
+app.use(ExpenseAnalyticsHandlers);
 
 
 //CRUD OPERATIONS FOR EXPENSE MODEL

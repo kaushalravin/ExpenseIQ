@@ -5,7 +5,10 @@ export default function FilterForm({ handleSubmit }) {
         category: "",
         paymentMode: "",
         from: "",
-        to: ""
+        to: "",
+        minAmount:"",
+        maxAmount:"",
+        note:""
     });
 
     const handleChange = (e) => {
@@ -71,6 +74,33 @@ export default function FilterForm({ handleSubmit }) {
                     onChange={handleChange}
                     className="form-input"
                     placeholder="To date"
+                />
+
+                <input
+                    type="number"
+                    name="minAmount"
+                    value={formData.minAmount}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Min-Amount"
+                />
+
+                <input
+                    type="number"
+                    name="maxAmount"
+                    value={formData.maxAmount}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Max-Amount"
+                />
+
+                <input
+                    type="text"
+                    name="note"
+                    value={formData.note}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Note"
                 />
 
                 <button type="submit" className="btn-primary">
