@@ -1,6 +1,6 @@
 const express = require('express');
 const ExpenseModel = require('../models/Expense');
-const Expense = require('../models/Expense');
+//const Expense = require('../models/Expense');
 const validateExpense = require('../validators/expenseMiddleware');
 const AppError = require('../utilities/AppError');
 const wrapAsync = require('../utilities/WrapAsync');

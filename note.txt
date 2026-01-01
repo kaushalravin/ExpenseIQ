@@ -918,3 +918,50 @@ export default function ShowData({ data,handleDelete,handleUpdate }) {
     );
 }
 
+//today
+//analytics.jsx
+import { useState, useEffect } from "react";
+//import {Chart as ChartJS} from "Chart.js/auto";
+import BarChart from "./charts/BarChart";
+import axios from "axios";
+
+export default function Analytics() {
+    const [pieData, setPieData] = useState([]);
+    const [barData, setBarData] = useState([]);
+    const [LineData, setLineData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+ useEffect(() => {
+        const fetchAnalytics = async () => {
+            try {
+                const [pieRes, barRes, lineRes] = await Promise.all([
+                    axios.get("http://localhost:3000/api/analytics/category"),
+                    axios.get("http://localhost:3000/api/analytics/paymentMode"),
+                    axios.get("http://localhost:3000/api/analytics/month"),
+                ]);
+
+                setPieData(pieRes.data.data);
+                setBarData(barRes.data.data);
+                setLineData(lineRes.data.data);
+            } catch (err) {
+                console.error(err);
+                setError("Failed to load analytics data");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAnalytics();
+    }, []);
+
+    if (loading) return <p>Loading analytics...</p>;
+    if (error) return <p>{error}</p>;
+
+
+        return (
+            <div>
+                <BarChart data={barData}></BarChart>
+            </div>
+        )
+    }

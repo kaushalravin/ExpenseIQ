@@ -5,6 +5,7 @@ import Login from './components/Login.jsx';
 import Signup from './components/Signup.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import Filter from './components/Filter.jsx';
+import Analytics from './components/Analytics.jsx';
 
 import './App.css'
 
@@ -20,7 +21,7 @@ function App() {
           <Route path='/auth/signup' element={<Signup/>}></Route>
           <Route path='/dashboard' element={<Dashboard/>}></Route>
           <Route path='/filter' element={<Filter/>}></Route>
-          
+          <Route path='/analytics' element={<Analytics/>}></Route>
         </Routes>
       </BrowserRouter>
     </>

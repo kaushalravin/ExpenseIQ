@@ -35,7 +35,8 @@ export default function Navbar({ setMessage }) {
   const menuItems = [
     { label: "Home", path: "/" },
     { label: "Dashboard", path: "/dashboard" },
-    { label: "Filter", path: "/filter" }
+    { label: "Filter", path: "/filter" },
+    {label:"Analytics",path:"/analytics"}
   ];
 
   return (
