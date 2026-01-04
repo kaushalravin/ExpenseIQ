@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { useNavigate, Link, Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
 import '../styles/login.css'
 
 axios.defaults.withCredentials = true;
@@ -48,12 +47,9 @@ export default function Login() {
         navigate("/auth/signup");
     }
 
-
-
     return (
         <div className="page-container">
             <div className="content-wrapper">
-                {/* Left side - Branding */}
                 <div className="branding-section">
                     <div className="brand-content">
                         <div className="brand-icon">
@@ -86,7 +82,6 @@ export default function Login() {
                     </div>
                 </div>
 
-                {/* Right side - Login Form */}
                 <div className="form-section">
                     <div className="form-container">
                         <div className="form-header">
@@ -97,24 +92,12 @@ export default function Login() {
                         {message && (
                             <div className="alert-box">
                                 <svg viewBox="0 0 20 20" fill="currentColor" className="alert-icon">
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                                        clipRule="evenodd"
-                                    />
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                                 </svg>
-
                                 <span>{message}</span>
-
-                                <button
-                                    className="alert-close"
-                                    onClick={() => setMessage("")}
-                                >
-                                    ×
-                                </button>
+                                <button className="alert-close" onClick={() => setMessage("")}>×</button>
                             </div>
                         )}
-
 
                         <form onSubmit={handleSubmit} className="form">
                             <div className="form-group">
@@ -171,7 +154,6 @@ export default function Login() {
                         <button type="button" className="btn-secondary" onClick={handleNavigate}>
                             Create an account
                         </button>
-
                     </div>
                 </div>
             </div>

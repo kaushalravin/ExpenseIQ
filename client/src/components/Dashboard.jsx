@@ -48,7 +48,6 @@ export default function Dashboard() {
 
     return (
         <div className="dashboard-container">
-            {/* Header with Navbar */}
             <header className="dashboard-header">
                 <div className="header-content">
                     <div className="header-left">
@@ -75,10 +74,8 @@ export default function Dashboard() {
                 </div>
             </header>
 
-            {/* Main Content */}
             <main className="dashboard-main">
                 <div className="dashboard-content">
-                    {/* Form Section */}
                     <section className="dashboard-section form-section-wrapper">
                         <div className="section-header">
                             <h2 className="section-title">Add New Expense</h2>
@@ -89,7 +86,6 @@ export default function Dashboard() {
                         </div>
                     </section>
 
-                    {/* Data Display Section */}
                     <section className="dashboard-section data-section-wrapper">
                         <div className="section-header">
                             <h2 className="section-title">Your Expenses</h2>

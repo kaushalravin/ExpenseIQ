@@ -3,7 +3,7 @@
   width: 100%;
 }
 
-/* Form Message */
+/* Form Message - Dark Theme */
 .form-message {
   display: flex;
   align-items: center;
@@ -28,15 +28,15 @@
 }
 
 .success-message {
-  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-  border: 1px solid #10b981;
-  color: #059669;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34d399;
 }
 
 .error-message {
-  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
-  border: 1px solid #fecaca;
-  color: #dc2626;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
 }
 
 .form-message svg {
@@ -70,14 +70,14 @@
   grid-column: 1 / -1;
 }
 
-/* Form Label */
+/* Form Label - Dark Theme */
 .form-label {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-size: 0.9375rem;
   font-weight: 600;
-  color: #374151;
+  color: #e2e8f0;
   letter-spacing: 0.01em;
 }
 
@@ -105,15 +105,15 @@
   z-index: 1;
 }
 
-/* Form Input */
+/* Form Input - Dark Theme */
 .form-input {
   width: 100%;
   padding: 0.875rem 1rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid #334155;
   border-radius: 12px;
   font-size: 1rem;
-  color: #111827;
-  background: #f9fafb;
+  color: #f8fafc;
+  background: #0f172a;
   transition: all 0.3s ease;
   outline: none;
   box-sizing: border-box;
@@ -124,24 +124,24 @@
 }
 
 .form-input::placeholder {
-  color: #9ca3af;
+  color: #475569;
 }
 
 .form-input:hover {
-  border-color: #d1d5db;
-  background: white;
+  border-color: #475569;
+  background: #1e293b;
 }
 
 .form-input:focus {
   border-color: #10b981;
-  background: white;
-  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+  background: #1e293b;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
 }
 
 /* Date Input Specific */
 .form-input[type="date"]::-webkit-calendar-picker-indicator {
   cursor: pointer;
-  filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(121deg) brightness(97%) contrast(97%);
+  filter: invert(1) brightness(0.8);
 }
 
 /* Select Wrapper */
@@ -149,16 +149,16 @@
   position: relative;
 }
 
-/* Form Select */
+/* Form Select - Dark Theme */
 .form-select {
   width: 100%;
   padding: 0.875rem 1rem;
   padding-right: 3rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid #334155;
   border-radius: 12px;
   font-size: 1rem;
-  color: #111827;
-  background: #f9fafb;
+  color: #f8fafc;
+  background: #0f172a;
   transition: all 0.3s ease;
   outline: none;
   cursor: pointer;
@@ -167,18 +167,20 @@
 }
 
 .form-select:hover {
-  border-color: #d1d5db;
-  background: white;
+  border-color: #475569;
+  background: #1e293b;
 }
 
 .form-select:focus {
   border-color: #10b981;
-  background: white;
-  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+  background: #1e293b;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
 }
 
 .form-select option {
   padding: 0.5rem;
+  background: #1e293b;
+  color: #f8fafc;
 }
 
 .select-arrow {
@@ -188,19 +190,19 @@
   transform: translateY(-50%);
   width: 20px;
   height: 20px;
-  color: #6b7280;
+  color: #64748b;
   pointer-events: none;
 }
 
-/* Form Textarea */
+/* Form Textarea - Dark Theme */
 .form-textarea {
   width: 100%;
   padding: 0.875rem 1rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid #334155;
   border-radius: 12px;
   font-size: 1rem;
-  color: #111827;
-  background: #f9fafb;
+  color: #f8fafc;
+  background: #0f172a;
   transition: all 0.3s ease;
   outline: none;
   resize: vertical;
@@ -209,21 +211,21 @@
 }
 
 .form-textarea::placeholder {
-  color: #9ca3af;
+  color: #475569;
 }
 
 .form-textarea:hover {
-  border-color: #d1d5db;
-  background: white;
+  border-color: #475569;
+  background: #1e293b;
 }
 
 .form-textarea:focus {
   border-color: #10b981;
-  background: white;
-  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+  background: #1e293b;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
 }
 
-/* Submit Button */
+/* Submit Button - Dark Theme */
 .submit-btn-form {
   width: 100%;
   padding: 1rem 1.5rem;
@@ -235,12 +237,13 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   margin-top: 0.5rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .submit-btn-form svg {
@@ -250,7 +253,7 @@
 
 .submit-btn-form:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.5);
   background: linear-gradient(135deg, #059669 0%, #047857 100%);
 }
 

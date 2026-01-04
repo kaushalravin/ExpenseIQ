@@ -34,9 +34,7 @@ export default function Analytics() {
                 axios.get("http://localhost:3000/api/analytics/paymentMode", {
                     params: formData
                 }),
-                axios.get("http://localhost:3000/api/analytics/month", {
-                    params: formData
-                })
+                axios.get("http://localhost:3000/api/analytics/month")
             ]);
 
             setPieData(pieRes.data.data);
