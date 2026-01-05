@@ -4,6 +4,9 @@ import FormFields from "./FormFields";
 import UpdatePopup from "./UpdatePopup";
 import ShowData from "./ShowData";
 import Navbar from "./Navbar";
+import BarChart from "./charts/BarChart";
+import PieChart from "./charts/PieChart";
+import LineChart from "./charts/LineChart";
 import "../styles/dashboard.css";
 import "../styles/filter.css";
 
@@ -18,6 +21,16 @@ export default function Dashboard() {
     const [isUpdateVisible, setIsUpdateVisible] = useState(false);
     const [updateData, setUpdateData] = useState(null);
 
+    // Analytics state
+    const [pieData, setPieData] = useState([]);
+    const [barData, setBarData] = useState([]);
+    const [lineData, setLineData] = useState([]);
+    const [analyticsLoading, setAnalyticsLoading] = useState(false);
+    const [dateFilter, setDateFilter] = useState({
+        from: "",
+        to: ""
+    });
+
     useEffect(() => {
         async function getData() {
             try {
@@ -30,6 +43,34 @@ export default function Dashboard() {
 
         getData();
     }, [refresh])
+
+    // Fetch analytics data
+    useEffect(() => {
+        const fetchAnalytics = async () => {
+            setAnalyticsLoading(true);
+            try {
+                const [pieRes, barRes, lineRes] = await Promise.all([
+                    axios.get("http://localhost:3000/api/analytics/category", {
+                        params: dateFilter
+                    }),
+                    axios.get("http://localhost:3000/api/analytics/paymentMode", {
+                        params: dateFilter
+                    }),
+                    axios.get("http://localhost:3000/api/analytics/month")
+                ]);
+
+                setPieData(pieRes.data.data);
+                setBarData(barRes.data.data);
+                setLineData(lineRes.data.data);
+            } catch (err) {
+                console.error("Failed to load analytics:", err);
+            } finally {
+                setAnalyticsLoading(false);
+            }
+        };
+
+        fetchAnalytics();
+    }, [dateFilter, refresh])
 
     useEffect(() => {
         if (message) {
@@ -112,6 +153,78 @@ export default function Dashboard() {
 
             <main className="dashboard-main">
                 <div className="dashboard-content">
+                    {/* Analytics Section */}
+                    <section className="dashboard-section analytics-section">
+                        <div className="section-header">
+                            <div className="section-header-left">
+                                <h2 className="section-title">Analytics Overview</h2>
+                                <p className="section-description">Visualize your spending patterns</p>
+                            </div>
+                            <div className="analytics-date-filter">
+                                <input
+                                    type="date"
+                                    name="from"
+                                    value={dateFilter.from}
+                                    onChange={(e) => setDateFilter(prev => ({ ...prev, from: e.target.value }))}
+                                    placeholder="From"
+                                    className="date-filter-input"
+                                />
+                                <span className="date-separator">to</span>
+                                <input
+                                    type="date"
+                                    name="to"
+                                    value={dateFilter.to}
+                                    onChange={(e) => setDateFilter(prev => ({ ...prev, to: e.target.value }))}
+                                    placeholder="To"
+                                    className="date-filter-input"
+                                />
+                            </div>
+                        </div>
+                        <div className="analytics-grid">
+                            <div className="chart-card">
+                                <div className="chart-card-header">
+                                    <h3 className="chart-title">Expenses by Category</h3>
+                                    <p className="chart-subtitle">Distribution of spending across categories</p>
+                                </div>
+                                <div className="chart-wrapper">
+                                    {analyticsLoading ? (
+                                        <div className="chart-loading">Loading...</div>
+                                    ) : (
+                                        <PieChart data={pieData} />
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="chart-card">
+                                <div className="chart-card-header">
+                                    <h3 className="chart-title">Payment Methods</h3>
+                                    <p className="chart-subtitle">Total expenses by payment mode</p>
+                                </div>
+                                <div className="chart-wrapper">
+                                    {analyticsLoading ? (
+                                        <div className="chart-loading">Loading...</div>
+                                    ) : (
+                                        <BarChart data={barData} />
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="chart-card chart-card-wide">
+                                <div className="chart-card-header">
+                                    <h3 className="chart-title">Monthly Trends</h3>
+                                    <p className="chart-subtitle">Track your spending over time</p>
+                                </div>
+                                <div className="chart-wrapper">
+                                    {analyticsLoading ? (
+                                        <div className="chart-loading">Loading...</div>
+                                    ) : (
+                                        <LineChart data={lineData} />
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
                     <section className="dashboard-section data-section-wrapper">
                         <div className="section-header">
                             <div className="section-header-left">

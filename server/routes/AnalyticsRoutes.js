@@ -136,4 +136,127 @@ router.get("/api/analytics/month",isLoggedIn,wrapAsync(async (req,res)=>{
     res.json({success:true,data:result});
 }))
 
+
+router.get("api/analytics/totalExpense",isLoggedIn,wrapAsync(async(req,res)=>{
+    const result=await ExpenseModel.find({});
+    let sum=0;
+    sum+=result.data.map((amt)=>{
+        return amt.amount;
+    })
+    res.json({success:true,data:sum})
+}))
+
+router.get("api/analytics/Expense-month",isLoggedIn,wrapAsync(async(req,res)=>{
+    const now = new Date();
+
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const startOfNextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+  const [total] = await ExpenseModel.aggregate([
+    {
+      $match: {
+        userId: req.user.id,
+        date: { $gte: startOfMonth, $lt: startOfNextMonth }
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        totalAmount: { $sum: "$amount" }
+      }
+    }
+  ]);
+
+  res.json({
+    success: true,
+    data: {
+      totalThisMonth: total?.totalAmount || 0
+    }
+  });
+}));
+
+router.get("api/analytics/Expense-month-prev",isLoggedIn,wrapAsync(async(req,res)=>{
+    const now = new Date();
+
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth()-1, 1);
+  const startOfNextMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  const [total] = await ExpenseModel.aggregate([
+    {
+      $match: {
+        userId: req.user.id,
+        date: { $gte: startOfMonth, $lt: startOfNextMonth }
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        totalAmount: { $sum: "$amount" }
+      }
+    }
+  ]);
+
+  res.json({
+    success: true,
+    data: {
+      totalThisMonth: total?.totalAmount || 0
+    }
+  });
+}));
+
+
+router.get("api/analytics/Expense-year",isLoggedIn,wrapAsync(async(req,res)=>{
+    const now=new Date();
+
+    const yearStart=new Date(now.getFullYear(),1,1);
+    const yearEnd=new Date(now.getFullYear()+1,1,1);
+
+    const [total]=await ExpenseModel.aggregate([
+        {
+            $match:{
+                userId:req.user.id,
+                date:{$gte:yearStart,$lte:yearEnd}
+            }
+        },
+        {
+            $group:{
+                _id:null,
+                totalAmount:{$sum:"$amount"}
+            }
+        }
+    ]);
+
+    res.json({success:true,data:{
+        totalThisYear:total?totalAmount:0
+    }})
+}));
+
+
+router.get("api/analytics/Expense-year-prev",isLoggedIn,wrapAsync(async(req,res)=>{
+    const now=new Date();
+
+    const yearStart=new Date(now.getFullYear()-1,1,1);
+    const yearEnd=new Date(now.getFullYear(),1,1);
+
+    const [total]=await ExpenseModel.aggregate([
+        {
+            $match:{
+                userId:req.user.id,
+                date:{$gte:yearStart,$lte:yearEnd}
+            }
+        },
+        {
+            $group:{
+                _id:null,
+                totalAmount:{$sum:"$amount"}
+            }
+        }
+    ]);
+
+    res.json({success:true,data:{
+        totalThisYear:total?totalAmount:0
+    }})
+}));
+
+
 module.exports=router;
