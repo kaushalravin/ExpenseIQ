@@ -10,6 +10,7 @@ import {
   ListItemText
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
+import "../styles/navbar.css";
 
 export default function Navbar({ setMessage }) {
   const navigate = useNavigate();
@@ -45,20 +46,20 @@ export default function Navbar({ setMessage }) {
         onClick={toggleDrawer(true)}
         className="navbar-toggle-btn"
         sx={{
-          background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+          background: '#3b82f6',
           color: 'white',
           fontWeight: 600,
           padding: '0.75rem 1.5rem',
           borderRadius: '12px',
           textTransform: 'none',
           fontSize: '1rem',
-          boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
+          boxShadow: '0 2px 8px rgba(59, 130, 246, 0.2)',
           '&:hover': {
-            background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-            boxShadow: '0 6px 16px rgba(16, 185, 129, 0.4)',
+            background: '#2563eb',
+            boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
             transform: 'translateY(-2px)',
           },
-          transition: 'all 0.3s ease'
+          transition: 'all 0.2s ease'
         }}
       >
         <svg 
@@ -81,8 +82,8 @@ export default function Navbar({ setMessage }) {
         PaperProps={{
           sx: {
             width: 280,
-            background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
-            borderRight: 'none',
+            background: '#ffffff',
+            borderRight: '1px solid #e2e8f0',
           }
         }}
       >
@@ -98,7 +99,7 @@ export default function Navbar({ setMessage }) {
           {/* Drawer Header */}
           <Box sx={{ 
             padding: '2rem 1.5rem',
-            background: 'linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%)',
+            background: '#3b82f6',
             color: 'white',
             borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
           }}>
@@ -158,15 +159,16 @@ export default function Navbar({ setMessage }) {
                   sx={{
                     borderRadius: '12px',
                     padding: '0.875rem 1.25rem',
-                    transition: 'all 0.3s ease',
-                    background: 'white',
+                    transition: 'all 0.2s ease',
+                    background: '#f8fafc',
                     marginBottom: '0.5rem',
-                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
+                    border: '1px solid #e2e8f0',
                     '&:hover': {
-                      background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                      background: '#3b82f6',
                       color: 'white',
+                      borderColor: '#3b82f6',
                       transform: 'translateX(4px)',
-                      boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
+                      boxShadow: '0 2px 8px rgba(59, 130, 246, 0.2)',
                       '& .MuiListItemText-primary': {
                         color: 'white',
                         fontWeight: 600
@@ -199,15 +201,15 @@ export default function Navbar({ setMessage }) {
                 sx={{
                   borderRadius: '12px',
                   padding: '0.875rem 1.25rem',
-                  transition: 'all 0.3s ease',
-                  background: 'white',
-                  border: '2px solid #ef4444',
-                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
+                  transition: 'all 0.2s ease',
+                  background: '#fef2f2',
+                  border: '1px solid #fca5a5',
                   '&:hover': {
                     background: '#ef4444',
                     color: 'white',
+                    borderColor: '#ef4444',
                     transform: 'translateX(4px)',
-                    boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)',
+                    boxShadow: '0 2px 8px rgba(239, 68, 68, 0.2)',
                     '& .MuiListItemText-primary': {
                       color: 'white',
                       fontWeight: 600
@@ -236,8 +238,8 @@ export default function Navbar({ setMessage }) {
           {/* Footer */}
           <Box sx={{
             padding: '1.5rem',
-            borderTop: '1px solid rgba(0, 0, 0, 0.08)',
-            background: 'white',
+            borderTop: '1px solid #e2e8f0',
+            background: '#f8fafc',
             textAlign: 'center'
           }}>
             <Box sx={{ 

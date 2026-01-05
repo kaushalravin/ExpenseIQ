@@ -33,15 +33,15 @@ export default function ShowData({ data, handleDelete, handleUpdate }) {
                     <TableHead>
                         <TableRow
                             sx={{
-                                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                background: '#3b82f6',
                                 '& .MuiTableCell-head': {
                                     color: 'white',
-                                    fontWeight: 700,
-                                    fontSize: '0.9375rem',
-                                    letterSpacing: '0.025em',
+                                    fontWeight: 600,
+                                    fontSize: '0.875rem',
+                                    letterSpacing: '0.02em',
                                     textTransform: 'uppercase',
                                     borderBottom: 'none',
-                                    padding: '1.25rem 1rem'
+                                    padding: '1rem'
                                 }
                             }}
                         >
@@ -61,14 +61,14 @@ export default function ShowData({ data, handleDelete, handleUpdate }) {
                                 sx={{ 
                                     '&:last-child td, &:last-child th': { border: 0 },
                                     '&:hover': {
-                                        background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
-                                        transition: 'all 0.3s ease'
+                                        background: '#f8fafc',
+                                        transition: 'all 0.2s ease'
                                     },
                                     '& .MuiTableCell-body': {
                                         fontSize: '0.9375rem',
-                                        color: '#374151',
+                                        color: '#334155',
                                         padding: '1rem',
-                                        borderBottom: '1px solid #f3f4f6'
+                                        borderBottom: '1px solid #f1f5f9'
                                     }
                                 }}
                             >
@@ -76,7 +76,7 @@ export default function ShowData({ data, handleDelete, handleUpdate }) {
                                     align="right"
                                     sx={{
                                         fontWeight: 600,
-                                        color: '#059669 !important'
+                                        color: '#64748b !important'
                                     }}
                                 >
                                     {row.date}
@@ -86,7 +86,7 @@ export default function ShowData({ data, handleDelete, handleUpdate }) {
                                     sx={{
                                         fontWeight: 700,
                                         fontSize: '1rem !important',
-                                        color: '#10b981 !important'
+                                        color: '#3b82f6 !important'
                                     }}
                                 >
                                     ₹{row.amount}
@@ -95,12 +95,12 @@ export default function ShowData({ data, handleDelete, handleUpdate }) {
                                     align="right"
                                     sx={{
                                         '& span': {
-                                            background: '#ecfdf5',
+                                            background: '#eff6ff',
                                             padding: '0.375rem 0.75rem',
                                             borderRadius: '8px',
                                             fontSize: '0.875rem',
                                             fontWeight: 600,
-                                            color: '#059669',
+                                            color: '#2563eb',
                                             display: 'inline-block'
                                         }
                                     }}
@@ -120,12 +120,12 @@ export default function ShowData({ data, handleDelete, handleUpdate }) {
                                     align="right"
                                     sx={{
                                         '& span': {
-                                            background: 'linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)',
+                                            background: '#f8fafc',
                                             padding: '0.375rem 0.75rem',
                                             borderRadius: '8px',
                                             fontSize: '0.875rem',
                                             fontWeight: 600,
-                                            color: '#374151',
+                                            color: '#64748b',
                                             display: 'inline-block'
                                         }
                                     }}

@@ -1,0 +1,38 @@
+/* ============================================
+   NAVBAR - LIGHT PROFESSIONAL THEME
+   ============================================ */
+
+/* Navbar Toggle Button */
+.navbar-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* MUI Drawer Overrides */
+.MuiDrawer-paper {
+  background: #ffffff !important;
+  border-right: 1px solid #e2e8f0 !important;
+}
+
+/* Smooth transitions for all drawer elements */
+.MuiListItemButton-root {
+  transition: all 0.2s ease !important;
+}
+
+/* Menu item text color consistency */
+.MuiListItemText-primary {
+  transition: color 0.2s ease !important;
+}
+
+/* Ensure icons stay aligned */
+.MuiListItemButton-root svg {
+  transition: transform 0.2s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .MuiDrawer-paper {
+    width: 260px !important;
+  }
+}
