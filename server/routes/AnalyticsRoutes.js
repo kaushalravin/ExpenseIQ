@@ -136,17 +136,33 @@ router.get("/api/analytics/month",isLoggedIn,wrapAsync(async (req,res)=>{
     res.json({success:true,data:result});
 }))
 
+//total expenses
+router.get("/api/analytics/totalExpense", isLoggedIn, wrapAsync(async (req, res) => {
+  const [total] = await ExpenseModel.aggregate([
+    {
+      $match: {
+        userId: new mongoose.Types.ObjectId(req.user.id)
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        totalAmount: { $sum: "$amount" }
+      }
+    }
+  ]);
 
-router.get("api/analytics/totalExpense",isLoggedIn,wrapAsync(async(req,res)=>{
-    const result=await ExpenseModel.find({});
-    let sum=0;
-    sum+=result.data.map((amt)=>{
-        return amt.amount;
-    })
-    res.json({success:true,data:sum})
-}))
+  res.json({
+    success: true,
+    data: {
+      total: total?.totalAmount || 0
+    }
+  });
+}));
 
-router.get("api/analytics/Expense-month",isLoggedIn,wrapAsync(async(req,res)=>{
+
+//total expense this month
+router.get("/api/analytics/Expense-month",isLoggedIn,wrapAsync(async(req,res)=>{
     const now = new Date();
 
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -155,7 +171,7 @@ router.get("api/analytics/Expense-month",isLoggedIn,wrapAsync(async(req,res)=>{
   const [total] = await ExpenseModel.aggregate([
     {
       $match: {
-        userId: req.user.id,
+        userId:new mongoose.Types.ObjectId(req.user.id),
         date: { $gte: startOfMonth, $lt: startOfNextMonth }
       }
     },
@@ -175,7 +191,8 @@ router.get("api/analytics/Expense-month",isLoggedIn,wrapAsync(async(req,res)=>{
   });
 }));
 
-router.get("api/analytics/Expense-month-prev",isLoggedIn,wrapAsync(async(req,res)=>{
+//total expense previous month
+router.get("/api/analytics/Expense-month-prev",isLoggedIn,wrapAsync(async(req,res)=>{
     const now = new Date();
 
   const startOfMonth = new Date(now.getFullYear(), now.getMonth()-1, 1);
@@ -184,7 +201,7 @@ router.get("api/analytics/Expense-month-prev",isLoggedIn,wrapAsync(async(req,res
   const [total] = await ExpenseModel.aggregate([
     {
       $match: {
-        userId: req.user.id,
+        userId: new mongoose.Types.ObjectId(req.user.id),
         date: { $gte: startOfMonth, $lt: startOfNextMonth }
       }
     },
@@ -199,22 +216,22 @@ router.get("api/analytics/Expense-month-prev",isLoggedIn,wrapAsync(async(req,res
   res.json({
     success: true,
     data: {
-      totalThisMonth: total?.totalAmount || 0
+      totalPrevMonth: total?.totalAmount || 0
     }
   });
 }));
 
-
-router.get("api/analytics/Expense-year",isLoggedIn,wrapAsync(async(req,res)=>{
+//total expense current year
+router.get("/api/analytics/Expense-year",isLoggedIn,wrapAsync(async(req,res)=>{
     const now=new Date();
 
-    const yearStart=new Date(now.getFullYear(),1,1);
-    const yearEnd=new Date(now.getFullYear()+1,1,1);
+    const yearStart=new Date(now.getFullYear(),0,1);
+    const yearEnd=new Date(now.getFullYear()+1,0,1);
 
     const [total]=await ExpenseModel.aggregate([
         {
             $match:{
-                userId:req.user.id,
+                userId:new mongoose.Types.ObjectId(req.user.id),
                 date:{$gte:yearStart,$lte:yearEnd}
             }
         },
@@ -227,21 +244,21 @@ router.get("api/analytics/Expense-year",isLoggedIn,wrapAsync(async(req,res)=>{
     ]);
 
     res.json({success:true,data:{
-        totalThisYear:total?totalAmount:0
+        totalThisYear:total?total:0
     }})
 }));
 
-
-router.get("api/analytics/Expense-year-prev",isLoggedIn,wrapAsync(async(req,res)=>{
+//total expense previous year
+router.get("/api/analytics/Expense-year-prev",isLoggedIn,wrapAsync(async(req,res)=>{
     const now=new Date();
 
-    const yearStart=new Date(now.getFullYear()-1,1,1);
-    const yearEnd=new Date(now.getFullYear(),1,1);
+    const yearStart=new Date(now.getFullYear()-1,0,1);
+    const yearEnd=new Date(now.getFullYear(),0,1);
 
     const [total]=await ExpenseModel.aggregate([
         {
             $match:{
-                userId:req.user.id,
+                userId:new mongoose.Types.ObjectId(req.user.id),
                 date:{$gte:yearStart,$lte:yearEnd}
             }
         },
@@ -254,9 +271,73 @@ router.get("api/analytics/Expense-year-prev",isLoggedIn,wrapAsync(async(req,res)
     ]);
 
     res.json({success:true,data:{
-        totalThisYear:total?totalAmount:0
+        totalPrevYear:total?total:0
     }})
 }));
+
+//highest expense this year
+router.get("/api/analytics/highest-expense-year",isLoggedIn,wrapAsync(async(req,res)=>{
+    const now=new Date();
+  const startOfYear = new Date(now.getFullYear(), 0, 1);
+  const startOfNextYear = new Date(now.getFullYear() + 1, 0, 1);
+
+  const highestExpense = await ExpenseModel.findOne({
+    userId: req.user.id,
+    date: {
+      $gte: startOfYear,
+      $lt: startOfNextYear
+    }
+  }).sort({ amount: -1 });
+
+  res.json({success:true,data:highestExpense || null})
+}))
+
+//highest category spent on this year
+router.get(
+  "/api/analytics/highest-category-year",
+  isLoggedIn,
+  wrapAsync(async (req, res) => {
+    const now = new Date();
+
+    const startOfYear = new Date(now.getFullYear(), 0, 1);
+    const startOfNextYear = new Date(now.getFullYear() + 1, 0, 1);
+
+    const highestCategory = await ExpenseModel.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(req.user.id),
+          date: {
+            $gte: startOfYear,
+            $lt: startOfNextYear
+          }
+        }
+      },
+      {
+        $group: {
+          _id: "$category",
+          totalAmount: { $sum: "$amount" }
+        }
+      },
+      {
+        $sort: { totalAmount: -1 }
+      },
+      {
+        $limit: 1
+      }
+    ]);
+
+    res.json({
+      success: true,
+      data: {
+        category: highestCategory[0]?._id || "N/A",
+        amount: highestCategory[0]?.totalAmount || 0
+      }
+    });
+  })
+);
+
+
+
 
 
 module.exports=router;

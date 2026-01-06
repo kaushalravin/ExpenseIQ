@@ -31,8 +31,36 @@
 }
 
 /* Responsive adjustments */
+@media (max-width: 768px) {
+  .MuiDrawer-paper {
+    width: 280px !important;
+  }
+
+  .navbar-toggle-btn {
+    padding: 0.625rem 1.25rem !important;
+    font-size: 0.9375rem !important;
+  }
+}
+
 @media (max-width: 600px) {
   .MuiDrawer-paper {
     width: 260px !important;
+  }
+
+  .navbar-toggle-btn {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.875rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .MuiDrawer-paper {
+    width: 85vw !important;
+    max-width: 280px !important;
+  }
+
+  .navbar-toggle-btn {
+    padding: 0.5rem 0.875rem !important;
+    font-size: 0.8125rem !important;
   }
 }

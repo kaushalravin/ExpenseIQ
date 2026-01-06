@@ -367,6 +367,9 @@ body {
   transition: all 0.2s ease;
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
   margin-top: 0.5rem;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  min-height: 48px;
 }
 
 .btn-primary:hover {
@@ -413,6 +416,9 @@ body {
   cursor: pointer;
   transition: all 0.2s ease;
   text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  min-height: 48px;
 }
 
 .btn-secondary:hover {

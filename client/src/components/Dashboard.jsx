@@ -7,6 +7,7 @@ import Navbar from "./Navbar";
 import BarChart from "./charts/BarChart";
 import PieChart from "./charts/PieChart";
 import LineChart from "./charts/LineChart";
+import CardParent from "./CardParent";
 import "../styles/dashboard.css";
 import "../styles/filter.css";
 
@@ -153,6 +154,8 @@ export default function Dashboard() {
 
             <main className="dashboard-main">
                 <div className="dashboard-content">
+                    {/* Cards Section */}
+                    <CardParent />
                     {/* Analytics Section */}
                     <section className="dashboard-section analytics-section">
                         <div className="section-header">

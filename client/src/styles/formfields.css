@@ -104,6 +104,8 @@
   transition: all 0.2s;
   outline: none;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .form-input.with-currency {
@@ -223,6 +225,9 @@
   justify-content: center;
   gap: 0.5rem;
   margin-top: 0.5rem;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  min-height: 44px;
 }
 
 .submit-btn-form svg {
@@ -243,15 +248,57 @@
 @media (max-width: 768px) {
   .form-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .expense-form {
+    gap: 1rem;
   }
 
   .form-label {
     font-size: 0.8125rem;
   }
 
+  .form-label svg {
+    width: 16px;
+    height: 16px;
+  }
+
   .form-input,
   .form-select,
   .form-textarea {
     font-size: 0.875rem;
+    padding: 0.6875rem 0.875rem;
+  }
+
+  .form-input.with-currency {
+    padding-left: 2.25rem;
+  }
+
+  .currency-symbol {
+    font-size: 1rem;
+  }
+
+  .submit-btn-form {
+    font-size: 0.9375rem;
+    padding: 0.8125rem 1.25rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .form-message {
+    font-size: 0.8125rem;
+    padding: 0.75rem 0.875rem;
+  }
+
+  .form-label {
+    font-size: 0.75rem;
+  }
+
+  .form-input,
+  .form-select,
+  .form-textarea {
+    font-size: 0.8125rem;
+    padding: 0.625rem 0.75rem;
   }
 }

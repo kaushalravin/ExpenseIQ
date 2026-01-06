@@ -18,12 +18,19 @@ export default function ShowData({ data, handleDelete, handleUpdate }) {
                     borderRadius: '16px',
                     boxShadow: 'none',
                     border: '1px solid #e5e7eb',
-                    overflow: 'hidden'
+                    overflow: 'auto',
+                    maxWidth: '100%',
+                    '@media (max-width: 768px)': {
+                        borderRadius: '12px'
+                    }
                 }}
             >
                 <Table 
                     sx={{ 
                         minWidth: 650,
+                        '@media (max-width: 768px)': {
+                            minWidth: 800
+                        },
                         '& .MuiTableCell-root': {
                             fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
                         }
