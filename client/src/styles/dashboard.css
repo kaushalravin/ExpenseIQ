@@ -7,6 +7,9 @@
   background: #f8fafc;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 /* ============================================
@@ -97,6 +100,8 @@
   padding: 2rem;
   max-width: 1400px;
   margin: 0 auto;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .dashboard-content {
@@ -777,6 +782,9 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
   margin-top: 1.5rem;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .chart-card {
@@ -786,6 +794,8 @@
   border: 1px solid #e2e8f0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   transition: all 0.2s ease;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .chart-card:hover {
@@ -816,8 +826,10 @@
 
 .chart-wrapper {
   width: 100%;
+  max-width: 100%;
   height: 320px;
   position: relative;
+  overflow: hidden;
 }
 
 .chart-card-wide .chart-wrapper {

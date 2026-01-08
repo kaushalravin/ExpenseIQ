@@ -48,6 +48,16 @@ router.delete('/api/expenses/:id', isLoggedIn, isAuthorized, wrapAsync(async (re
     res.json({ success: true, data: { message: "successfully deleted an expense" } })
 }))
 
+//post route to insert many entries at once (after parsing csv)
+router.post('/api/expenses/bulk',isLoggedIn,wrapAsync(async(req,res,next)=>{
+    const expensesArray=req.body.expenses;
+    for(const expenseData of expensesArray){
+        expenseData.userId=req.user.id;
+    }
+    await ExpenseModel.insertMany(expensesArray);
+    res.json({success:true,data:{message:"successfully added multiple expenses"}});
+}))
+
 //filter route
 
 router.get("/api/expenses/filter", isLoggedIn, wrapAsync(async (req, res, next) => {

@@ -336,8 +336,102 @@ router.get(
   })
 );
 
+//highest paymentMode used this year
+router.get(
+  "/api/analytics/highest-paymentMode-year",
+  isLoggedIn,
+  wrapAsync(async (req, res) => {
+    const now = new Date();
 
+    const startOfYear = new Date(now.getFullYear(), 0, 1);
+    const startOfNextYear = new Date(now.getFullYear() + 1, 0, 1);
 
+    const highestCategory = await ExpenseModel.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(req.user.id),
+          date: {
+            $gte: startOfYear,
+            $lt: startOfNextYear
+          }
+        }
+      },
+      {
+        $group: {
+          _id: "$paymentMode",
+          totalAmount: { $sum: "$amount" }
+        }
+      },
+      {
+        $sort: { totalAmount: -1 }
+      },
+      {
+        $limit: 1
+      }
+    ]);
 
+    res.json({
+      success: true,
+      data: {
+        paymentMode: highestCategory[0]?._id || "N/A",
+        amount: highestCategory[0]?.totalAmount || 0
+      }
+    });
+  })
+);
+
+//no of transactions this year
+router.get("/api/analytics/transactions-year",isLoggedIn,wrapAsync(async(req,res)=>{
+    const now = new Date();
+
+    const startOfYear = new Date(now.getFullYear(), 0, 1);
+    const startOfNextYear = new Date(now.getFullYear() + 1, 0, 1);
+
+    const result = await ExpenseModel.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(req.user.id),
+          date: { $gte: startOfYear, $lt: startOfNextYear }
+        }
+      },
+      {
+        $count: "totalTransactions"
+      }
+    ]);
+
+    res.json({
+      success: true,
+      data: {
+        totalTransactions: result[0] ? result[0].totalTransactions : 0
+      }
+    });
+}))
+
+//no of transactions this month
+router.get("/api/analytics/transactions-month",isLoggedIn,wrapAsync(async(req,res)=>{
+    const now = new Date();
+
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfNextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+    const result = await ExpenseModel.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(req.user.id),
+          date: { $gte: startOfMonth, $lt: startOfNextMonth }
+        }
+      },
+      {
+        $count: "totalTransactions"
+      }
+    ]);
+
+    res.json({
+      success: true,
+      data: {
+        totalTransactions: result[0] ? result[0].totalTransactions : 0
+      }
+    });
+}))
 
 module.exports=router;

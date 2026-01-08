@@ -1,0 +1,49 @@
+/* ============================================
+   CARD PARENT - LIGHT PROFESSIONAL THEME
+   ============================================ */
+
+.card-parent-container {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Responsive Layout */
+@media (max-width: 1200px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .card-parent-container {
+    margin-bottom: 1.5rem;
+    padding: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .cards-grid {
+    gap: 0.875rem;
+    grid-template-columns: 1fr;
+  }
+
+  .card-parent-container {
+    padding: 0;
+  }
+}

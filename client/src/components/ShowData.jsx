@@ -9,7 +9,7 @@ import Paper from '@mui/material/Paper';
 import { useState } from "react";
 import "../styles/showdata.css"
 
-export default function ShowData({ data, handleDelete, handleUpdate }) {
+export default function ShowData({ data, handleDelete, handleUpdate}) {
     return (
         <div className="show-data-container">
             <TableContainer 

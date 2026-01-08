@@ -155,7 +155,7 @@ export default function Dashboard() {
             <main className="dashboard-main">
                 <div className="dashboard-content">
                     {/* Cards Section */}
-                    <CardParent />
+                    <CardParent refresh={refresh}/>
                     {/* Analytics Section */}
                     <section className="dashboard-section analytics-section">
                         <div className="section-header">
@@ -246,7 +246,7 @@ export default function Dashboard() {
                             </div>
                         </div>
                         <div className="section-content">
-                            <ShowData data={data} handleDelete={handleDelete} handleUpdate={handleUpdate}></ShowData>
+                            <ShowData data={data} handleDelete={handleDelete} handleUpdate={handleUpdate} refresh={refresh}></ShowData>
                         </div>
                     </section>
                 </div>
