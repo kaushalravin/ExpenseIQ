@@ -8,6 +8,7 @@ import BarChart from "./charts/BarChart";
 import PieChart from "./charts/PieChart";
 import LineChart from "./charts/LineChart";
 import CardParent from "./CardParent";
+import validateCsv from "../validators/csvValidators";
 import "../styles/dashboard.css";
 import "../styles/filter.css";
 
@@ -31,6 +32,43 @@ export default function Dashboard() {
         from: "",
         to: ""
     });
+
+    //csv data handling state
+    const [csvData, setCsvData] = useState(null);
+
+    useEffect(()=>{
+        async function handleCsvUpload(){
+            if(!csvData){
+                setMessage("No CSV data to upload");
+                return;
+            }
+            const validationResults = validateCsv(csvData);
+            if(validationResults.valid===false){
+                if (validationResults.message) {
+                    setMessage(`CSV Validation Error: ${validationResults.message}`);
+                } else if (validationResults.invalidRows?.length) {
+                    const first = validationResults.invalidRows[0];
+                    setMessage(`CSV Validation Error (row ${first.row}): ${first.errors.join(", ")}`);
+                } else {
+                    setMessage("CSV Validation Error");
+                }
+                return;
+            }
+
+            const result = await axios.post(
+                "http://localhost:3000/api/expenses/bulk",
+                { expenses: validationResults.validRows }
+            );
+            if(result.data.success){
+                setMessage("CSV data uploaded successfully");
+                setRefresh(prev=>!prev);
+            }else{
+                setMessage("Failed to upload CSV data");
+            }
+        }
+        handleCsvUpload();
+    }, [csvData])
+
 
     useEffect(() => {
         async function getData() {
@@ -246,7 +284,7 @@ export default function Dashboard() {
                             </div>
                         </div>
                         <div className="section-content">
-                            <ShowData data={data} handleDelete={handleDelete} handleUpdate={handleUpdate} refresh={refresh}></ShowData>
+                            <ShowData data={data} handleDelete={handleDelete} handleUpdate={handleUpdate}></ShowData>
                         </div>
                     </section>
                 </div>
@@ -280,7 +318,7 @@ export default function Dashboard() {
                             </button>
                         </div>
                         <div className="popup-form-wrapper">
-                            <FormFields setRefresh={setRefresh} onClose={() => setIsAddVisible(false)} />
+                            <FormFields setRefresh={setRefresh} onClose={() => setIsAddVisible(false)} setCsvData={setCsvData}/>
                         </div>
                     </div>
                 </div>

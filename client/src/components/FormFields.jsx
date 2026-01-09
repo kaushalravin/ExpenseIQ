@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Papa from "papaparse";
 import "../styles/formfields.css";
 
 axios.defaults.withCredentials = true;
 
-export default function FormFields({ setRefresh, editingExpense, onClose }) {
+export default function FormFields({ setRefresh, editingExpense, onClose,setCsvData }) {
     const [formData, setFormData] = useState({
         amount: "",
         note: "",
@@ -73,8 +74,8 @@ export default function FormFields({ setRefresh, editingExpense, onClose }) {
                 setRefresh(prev => !prev);
                 // close popup if an onClose callback was provided (used by Add popup)
                 if (onClose) onClose();
-            }else{
-              setMessage(res.data.error.message);  
+            } else {
+                setMessage(res.data.error.message);
             }
 
         } catch (err) {
@@ -82,6 +83,25 @@ export default function FormFields({ setRefresh, editingExpense, onClose }) {
                 err.response?.data?.error?.message || "An error occurred"
             );
         }
+    };
+
+    //csv data parsing and sending to dashboard component
+
+    const handleCsvUpload = (evt) => {
+        const file = evt.target.files?.[0];
+        if (!file) return;
+
+        Papa.parse(file, {
+            header: true,
+            skipEmptyLines: true,
+            complete: (result) => {
+                setCsvData(result.data);
+                evt.target.value = "";
+            },
+            error: (err) => {
+                console.error(err);
+            }
+        });
     };
 
 
@@ -223,12 +243,30 @@ export default function FormFields({ setRefresh, editingExpense, onClose }) {
                     />
                 </div>
 
-                <button type="submit" className="submit-btn-form">
-                    <svg viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-                    </svg>
-                    {editingExpense ? 'Save Changes' : 'Add Expense'}
-                </button>
+                <input
+                    id="csvFile"
+                    type="file"
+                    accept=".csv"
+                    className="csv-input-hidden"
+                    onChange={handleCsvUpload}
+                />
+
+                <div className="form-buttons-grid">
+                    <button type="submit" className="submit-btn-form">
+                        <svg viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                        </svg>
+                        {editingExpense ? 'Save Changes' : 'Add Expense'}
+                    </button>
+
+                    <button type="button" className="csv-upload-btn" onClick={() => document.getElementById("csvFile")?.click()}>
+                        <svg viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                        </svg>
+                        Upload CSV
+                    </button>
+                </div>
+
             </form>
         </div>
     );

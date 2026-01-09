@@ -50,12 +50,29 @@ router.delete('/api/expenses/:id', isLoggedIn, isAuthorized, wrapAsync(async (re
 
 //post route to insert many entries at once (after parsing csv)
 router.post('/api/expenses/bulk',isLoggedIn,wrapAsync(async(req,res,next)=>{
-    const expensesArray=req.body.expenses;
-    for(const expenseData of expensesArray){
-        expenseData.userId=req.user.id;
+    const expensesArray = req.body.expenses;
+    if (!Array.isArray(expensesArray) || expensesArray.length === 0) {
+        throw new AppError("No expenses provided", 400);
     }
-    await ExpenseModel.insertMany(expensesArray);
-    res.json({success:true,data:{message:"successfully added multiple expenses"}});
+    console.log(expensesArray);
+
+    const docs = expensesArray.map((expenseData) => ({
+        ...expenseData,
+        userId: req.user.id
+    }));
+
+    const inserted = await ExpenseModel.insertMany(docs, {
+        ordered: true,
+        runValidators: true
+    });
+
+    res.json({
+        success: true,
+        data: {
+            message: "successfully added multiple expenses",
+            count: inserted.length
+        }
+    });
 }))
 
 //filter route
