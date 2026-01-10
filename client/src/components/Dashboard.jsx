@@ -8,6 +8,7 @@ import BarChart from "./charts/BarChart";
 import PieChart from "./charts/PieChart";
 import LineChart from "./charts/LineChart";
 import CardParent from "./CardParent";
+import CsvPreview from "./csvPreview";
 import validateCsv from "../validators/csvValidators";
 import "../styles/dashboard.css";
 import "../styles/filter.css";
@@ -35,39 +36,58 @@ export default function Dashboard() {
 
     //csv data handling state
     const [csvData, setCsvData] = useState(null);
+    const [validatedCsvRows, setValidatedCsvRows] = useState(null);
 
-    useEffect(()=>{
-        async function handleCsvUpload(){
-            if(!csvData){
-                setMessage("No CSV data to upload");
-                return;
+    //excel data handling state
+
+    useEffect(() => {
+        if (!csvData) {
+            setValidatedCsvRows(null);
+            return;
+        }
+
+        const validationResults = validateCsv(csvData);
+        if (validationResults.valid === false) {
+            if (validationResults.message) {
+                setMessage(`CSV Validation Error: ${validationResults.message}`);
+            } else if (validationResults.invalidRows?.length) {
+                const first = validationResults.invalidRows[0];
+                setMessage(`CSV Validation Error (row ${first.row}): ${first.errors.join(", ")}`);
+            } else {
+                setMessage("CSV Validation Error");
             }
-            const validationResults = validateCsv(csvData);
-            if(validationResults.valid===false){
-                if (validationResults.message) {
-                    setMessage(`CSV Validation Error: ${validationResults.message}`);
-                } else if (validationResults.invalidRows?.length) {
-                    const first = validationResults.invalidRows[0];
-                    setMessage(`CSV Validation Error (row ${first.row}): ${first.errors.join(", ")}`);
-                } else {
-                    setMessage("CSV Validation Error");
-                }
+            setValidatedCsvRows(null);
+            return;
+        }
+
+        setValidatedCsvRows(validationResults.validRows);
+    }, [csvData]);
+
+    const handleConfirmCsvUpload = async () => {
+        try {
+            if (!validatedCsvRows || validatedCsvRows.length === 0) {
+                setMessage("No CSV data to upload");
                 return;
             }
 
             const result = await axios.post(
                 "http://localhost:3000/api/expenses/bulk",
-                { expenses: validationResults.validRows }
+                { expenses: validatedCsvRows }
             );
-            if(result.data.success){
+
+            if (result.data.success) {
                 setMessage("CSV data uploaded successfully");
-                setRefresh(prev=>!prev);
-            }else{
+                setRefresh(prev => !prev);
+                setCsvData(null);
+                setValidatedCsvRows(null);
+                setIsAddVisible(false);
+            } else {
                 setMessage("Failed to upload CSV data");
             }
+        } catch (err) {
+            setMessage(err.response?.data?.error?.message || "Failed to upload CSV data");
         }
-        handleCsvUpload();
-    }, [csvData])
+    };
 
 
     useEffect(() => {
@@ -299,7 +319,7 @@ export default function Dashboard() {
                 <span className="fab-tooltip">Add Expense</span>
             </button>
 
-            {isAddVisible && (
+            {isAddVisible && !(csvData && validatedCsvRows) && (
                 <div className="popup-overlay" onClick={() => setIsAddVisible(false)}>
                     <div className="popup-container" onClick={(e) => e.stopPropagation()}>
                         <div className="popup-header">
@@ -322,6 +342,14 @@ export default function Dashboard() {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {csvData && validatedCsvRows && (
+                <CsvPreview 
+                    csvParsedData={csvData} 
+                    onConfirm={handleConfirmCsvUpload}
+                    onCancel={() => { setCsvData(null); setValidatedCsvRows(null); setIsAddVisible(false); }}
+                />
             )}
 
             {isUpdateVisible && (
