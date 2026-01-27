@@ -10,6 +10,7 @@ import LineChart from "./charts/LineChart";
 import CardParent from "./CardParent";
 import CsvPreview from "./csvPreview";
 import validateCsv from "../validators/csvValidators";
+import { normalizeExcelRow } from "../FileHandlers/handleXlsx";
 import "../styles/dashboard.css";
 import "../styles/filter.css";
 
@@ -49,14 +50,16 @@ export default function Dashboard() {
         const validationResults = validateCsv(csvData);
         if (validationResults.valid === false) {
             if (validationResults.message) {
-                setMessage(`CSV Validation Error: ${validationResults.message}`);
+                setMessage(`Validation Error: ${validationResults.message}`);
             } else if (validationResults.invalidRows?.length) {
                 const first = validationResults.invalidRows[0];
-                setMessage(`CSV Validation Error (row ${first.row}): ${first.errors.join(", ")}`);
+                setMessage(`Validation Error (row ${first.row}): ${first.errors.join(", ")}`);
             } else {
-                setMessage("CSV Validation Error");
+                setMessage("Validation Error");
             }
             setValidatedCsvRows(null);
+            setCsvData(null);
+            setIsAddVisible(false);
             return;
         }
 
@@ -67,6 +70,9 @@ export default function Dashboard() {
         try {
             if (!validatedCsvRows || validatedCsvRows.length === 0) {
                 setMessage("No CSV data to upload");
+                setCsvData(null);
+                setValidatedCsvRows(null);
+                setIsAddVisible(false);
                 return;
             }
 
@@ -83,9 +89,15 @@ export default function Dashboard() {
                 setIsAddVisible(false);
             } else {
                 setMessage("Failed to upload CSV data");
+                setCsvData(null);
+                setValidatedCsvRows(null);
+                setIsAddVisible(false);
             }
         } catch (err) {
             setMessage(err.response?.data?.error?.message || "Failed to upload CSV data");
+            setCsvData(null);
+            setValidatedCsvRows(null);
+            setIsAddVisible(false);
         }
     };
 

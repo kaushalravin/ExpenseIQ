@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import Papa from "papaparse";
+import {handleCsv} from "../FileHandlers/handleCsv.js";
+import {handleXlsx} from "../FileHandlers/handleXlsx.js";
 import "../styles/formfields.css";
+
 
 axios.defaults.withCredentials = true;
 
@@ -89,19 +91,15 @@ export default function FormFields({ setRefresh, editingExpense, onClose,setCsvD
 
     const handleCsvUpload = (evt) => {
         const file = evt.target.files?.[0];
+        const ext = file.name.split(".").pop().toLowerCase();
         if (!file) return;
 
-        Papa.parse(file, {
-            header: true,
-            skipEmptyLines: true,
-            complete: (result) => {
-                setCsvData(result.data);
-                evt.target.value = "";
-            },
-            error: (err) => {
-                console.error(err);
-            }
-        });
+        if(ext==="csv")
+            handleCsv(file,setCsvData);
+        else if(ext==="xlsx"||ext==="xls"){
+            handleXlsx(file,setCsvData);
+
+        }
     };
 
 
@@ -246,7 +244,7 @@ export default function FormFields({ setRefresh, editingExpense, onClose,setCsvD
                 <input
                     id="csvFile"
                     type="file"
-                    accept=".csv"
+                    accept=".csv,.xlsx,.xls"
                     className="csv-input-hidden"
                     onChange={handleCsvUpload}
                 />
@@ -263,7 +261,7 @@ export default function FormFields({ setRefresh, editingExpense, onClose,setCsvD
                         <svg viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
                         </svg>
-                        Upload CSV
+                        Upload data
                     </button>
                 </div>
 

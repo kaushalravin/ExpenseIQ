@@ -4,6 +4,8 @@ import Navbar from "./Navbar";
 import FilterForm from "./FilterForm";
 import ShowData from "./ShowData";
 import UpdatePopup from "./UpdatePopup";
+import exportFilteredExpenses from "../FileHandlers/exportXlsx";
+import ExportXlsx from "./ExportXlsx";
 import "../styles/filter.css";
 
 export default function Filter() {
@@ -11,6 +13,7 @@ export default function Filter() {
     const [data, setData] = useState([]);
     const [updateData, setUpdateData] = useState(null);
     const [isVisible, setIsVisible] = useState(false);
+    const [excelLink, setExcelLink] = useState(null);
 
     // 🔹 Fetch filtered data
     const handleSubmit = async (formData) => {
@@ -27,6 +30,7 @@ export default function Filter() {
                 setMessage("Something went wrong");
             }
         } catch (err) {
+            console.error(err);
             setMessage("Error fetching data");
         }
     };
@@ -52,7 +56,7 @@ export default function Filter() {
         e.preventDefault();
 
         try {
-            const { _id, __v, createdAt, userId, ...cleanData } = updateData;
+            const { _id, __v, ...cleanData } = updateData;
             console.log(cleanData);
             const res = await axios.put(
                 `http://localhost:3000/api/expenses/${updateData._id}`,
@@ -72,6 +76,7 @@ export default function Filter() {
                 );
             }
         } catch (err) {
+            console.error(err);
             setMessage("Error updating expense");
         }
     };
@@ -118,6 +123,52 @@ export default function Filter() {
                             <FilterForm handleSubmit={handleSubmit} />
                         </div>
                     </section>
+
+                    {/* Export Section */}
+                    <section className="dashboard-section export-section">
+                    <div className="section-header">
+                        <div className="section-header-left">
+                            <h2 className="section-title">Export Data</h2>
+                            <p className="section-description">Download filtered results as Excel</p>
+                        </div>
+                    </div>
+                    <div className="export-actions">
+                        <button
+                            className="export-btn"
+                            onClick={() => {
+                                const url = exportFilteredExpenses(data);
+                                if (!url) {
+                                    setMessage("No data to export");
+                                    setExcelLink((prev) => {
+                                        if (typeof prev === "string" && prev.startsWith("blob:")) {
+                                            URL.revokeObjectURL(prev);
+                                        }
+                                        return null;
+                                    });
+                                    return;
+                                }
+                                setExcelLink((prev) => {
+                                    if (typeof prev === "string" && prev.startsWith("blob:")) {
+                                        URL.revokeObjectURL(prev);
+                                    }
+                                    return url;
+                                });
+                            }}
+                        >
+                            <svg viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                            </svg>
+                            Generate Excel File
+                        </button>
+                        {excelLink && (
+                            <ExportXlsx
+                                link={excelLink}
+                                fileName="filtered_expenses.xlsx"
+                                onAfterDownload={() => setExcelLink(null)}
+                            />
+                        )}
+                    </div>
+                </section>
 
                     {/* Results Section */}
                     <section className="dashboard-section data-section-wrapper">
