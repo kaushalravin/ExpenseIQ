@@ -43,12 +43,14 @@ export default function FormFields({ setRefresh, editingExpense, onClose,setCsvD
         try {
             let res;
 
-            if (editingExpense) {
+            // Check if editingExpense has an _id - only then it's a real update operation
+            if (editingExpense && editingExpense._id) {
                 res = await axios.put(
                     `http://localhost:3000/api/expenses/${editingExpense._id}`,
                     formData
                 );
             } else {
+                // Either no editingExpense, or it's AI-parsed data without _id (new expense)
                 res = await axios.post(
                     "http://localhost:3000/api/expenses",
                     {
@@ -60,7 +62,7 @@ export default function FormFields({ setRefresh, editingExpense, onClose,setCsvD
 
             if (res.data.success) {
                 setMessage(
-                    editingExpense
+                    (editingExpense && editingExpense._id)
                         ? "Expense updated successfully"
                         : "Expense added successfully"
                 );
@@ -254,7 +256,7 @@ export default function FormFields({ setRefresh, editingExpense, onClose,setCsvD
                         <svg viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
                         </svg>
-                        {editingExpense ? 'Save Changes' : 'Add Expense'}
+                        {(editingExpense && editingExpense._id) ? 'Save Changes' : 'Add Expense'}
                     </button>
 
                     <button type="button" className="csv-upload-btn" onClick={() => document.getElementById("csvFile")?.click()}>

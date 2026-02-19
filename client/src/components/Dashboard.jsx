@@ -10,6 +10,7 @@ import LineChart from "./charts/LineChart";
 import CardParent from "./CardParent";
 import CsvPreview from "./csvPreview";
 import validateCsv from "../validators/csvValidators";
+import { useSpeechToText } from "../utilities/useSpeechToText";
 import { normalizeExcelRow } from "../FileHandlers/handleXlsx";
 import "../styles/dashboard.css";
 import "../styles/filter.css";
@@ -25,6 +26,12 @@ export default function Dashboard() {
     const [isUpdateVisible, setIsUpdateVisible] = useState(false);
     const [updateData, setUpdateData] = useState(null);
 
+    // AI Parsing state
+    const [isAiModalVisible, setIsAiModalVisible] = useState(false);
+    const [aiInputText, setAiInputText] = useState("");
+    const [aiParsing, setAiParsing] = useState(false);
+    const [aiParsedData, setAiParsedData] = useState(null);
+
     // Analytics state
     const [pieData, setPieData] = useState([]);
     const [barData, setBarData] = useState([]);
@@ -39,7 +46,8 @@ export default function Dashboard() {
     const [csvData, setCsvData] = useState(null);
     const [validatedCsvRows, setValidatedCsvRows] = useState(null);
 
-    //excel data handling state
+    //speech to text states
+    const { isListening, startListening, stopListening } = useSpeechToText();
 
     useEffect(() => {
         if (!csvData) {
@@ -194,6 +202,52 @@ export default function Dashboard() {
         }
     };
 
+    // AI Parsing Handler
+    const handleAiParse = async () => {
+        if (!aiInputText.trim()) {
+            setMessage("Please enter expense text");
+            return;
+        }
+
+        setAiParsing(true);
+        try {
+            const res = await axios.post(
+                "http://localhost:3000/api/expenses/parse-expense",
+                { text: aiInputText }
+            );
+
+            if (res.data.success) {
+                setAiParsedData(res.data.data.expense);
+                setMessage("Expense parsed! Review and edit if needed.");
+            } else {
+                setMessage("Failed to parse expense");
+            }
+        } catch (err) {
+            setMessage(err.response?.data?.error?.message || "AI parsing failed");
+        } finally {
+            setAiParsing(false);
+        }
+    };
+
+    const handleAiModalClose = () => {
+        if (isListening) {
+            stopListening();
+        }
+        setIsAiModalVisible(false);
+        setAiInputText("");
+        setAiParsedData(null);
+    };
+
+    const handleStartListening = () => {
+        startListening((transcript) => {
+            setAiInputText(prev => prev ? prev + " " + transcript : transcript);
+        });
+    };
+
+    const handleStopListening = () => {
+        stopListening();
+    };
+
     return (
         <div className="dashboard-container">
             <header className="dashboard-header">
@@ -322,14 +376,22 @@ export default function Dashboard() {
                 </div>
             </main>
 
-            {/* Floating Action Button */}
-            <button className="fab-button" onClick={() => { setIsAddVisible(true); setEditingExpense(null); }}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
-                <span className="fab-tooltip">Add Expense</span>
-            </button>
+            {/* Floating Action Buttons */}
+            <div className="fab-container">
+                <button className="fab-button fab-secondary fab-ai" onClick={() => setIsAiModalVisible(true)} title="AI Text Parsing">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                    <span className="fab-tooltip">AI Parse</span>
+                </button>
+
+                <button className="fab-button fab-primary" onClick={() => { setIsAddVisible(true); setEditingExpense(null); }}>
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+                    </svg>
+                    <span className="fab-tooltip">Add Expense</span>
+                </button>
+            </div>
 
             {isAddVisible && !(csvData && validatedCsvRows) && (
                 <div className="popup-overlay" onClick={() => setIsAddVisible(false)}>
@@ -372,6 +434,131 @@ export default function Dashboard() {
                     handleUpdateSubmit={handleUpdateSubmit}
                     onClose={() => { setIsUpdateVisible(false); setUpdateData(null); }}
                 />
+            )}
+
+            {/* AI Text Parsing Modal */}
+            {isAiModalVisible && (
+                <div className="popup-overlay" onClick={handleAiModalClose}>
+                    <div className="popup-container ai-modal-container" onClick={(e) => e.stopPropagation()}>
+                        <div className="popup-header">
+                            <div className="popup-header-content">
+                                <div className="popup-icon popup-icon-ai">
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h2 className="popup-title">AI Expense Parser</h2>
+                                    <p className="popup-subtitle">
+                                        {aiParsedData ? "Review & edit before saving" : "Type naturally, let AI do the rest"}
+                                    </p>
+                                </div>
+                            </div>
+                            <button className="popup-close" onClick={handleAiModalClose}>
+                                <svg viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div className="ai-modal-content">
+                            {!aiParsedData ? (
+                                <div className="ai-input-section">
+                                    <label className="ai-label">
+                                        Describe your expense in natural language
+                                        <span className="ai-hint">e.g., "Spent 500 on groceries yesterday using UPI" or speak using the microphone</span>
+                                    </label>
+                                    <div className="ai-textarea-wrapper">
+                                        <textarea
+                                            className="ai-textarea"
+                                            value={aiInputText}
+                                            onChange={(e) => setAiInputText(e.target.value)}
+                                            placeholder="Spent 320 on coffee at Starbucks today via credit card"
+                                            rows="4"
+                                            disabled={aiParsing || isListening}
+                                        />
+                                        {isListening && (
+                                            <div className="ai-listening-indicator">
+                                                <div className="ai-listening-pulse"></div>
+                                                <span>Listening...</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="ai-button-group">
+                                        {!isListening ? (
+                                            <button 
+                                                className="ai-voice-btn"
+                                                onClick={handleStartListening}
+                                                disabled={aiParsing}
+                                                title="Start Voice Input"
+                                            >
+                                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                                                    <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                                                </svg>
+                                                Start Listening
+                                            </button>
+                                        ) : (
+                                            <button 
+                                                className="ai-voice-btn ai-voice-btn-stop"
+                                                onClick={handleStopListening}
+                                                title="Stop Voice Input"
+                                            >
+                                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                                    <rect x="6" y="6" width="12" height="12" />
+                                                </svg>
+                                                Stop Listening
+                                            </button>
+                                        )}
+                                        <button 
+                                            className="ai-parse-btn"
+                                            onClick={handleAiParse}
+                                            disabled={aiParsing || !aiInputText.trim() || isListening}
+                                        >
+                                        {aiParsing ? (
+                                            <>
+                                                <svg className="ai-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                    <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83" />
+                                                </svg>
+                                                Parsing...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                                </svg>
+                                                Parse with AI
+                                            </>
+                                        )}
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="ai-form-section">
+                                    <div className="ai-success-banner">
+                                        <svg viewBox="0 0 20 20" fill="currentColor">
+                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                        </svg>
+                                        <span>Expense parsed successfully! Edit any field if needed, then save.</span>
+                                    </div>
+                                    <FormFields 
+                                        setRefresh={setRefresh} 
+                                        editingExpense={aiParsedData}
+                                        onClose={handleAiModalClose}
+                                    />
+                                    <button 
+                                        className="ai-parse-again-btn" 
+                                        onClick={() => { setAiParsedData(null); setAiInputText(""); }}
+                                    >
+                                        <svg viewBox="0 0 20 20" fill="currentColor">
+                                            <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+                                        </svg>
+                                        Parse Different Expense
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     )

@@ -1,4 +1,6 @@
 require("dotenv").config();
+// Helps avoid intermittent outbound HTTPS failures on networks with broken IPv6.
+require("dns").setDefaultResultOrder("ipv4first");
 const express=require('express');
 const cors=require('cors');
 const mongoose=require('mongoose');

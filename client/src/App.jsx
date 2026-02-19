@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import {Route,Routes,BrowserRouter} from "react-router-dom";
-import Home from './components/Home.jsx';
+import Landing from './components/Landing.jsx';
 import Login from './components/Login.jsx';
 import Signup from './components/Signup.jsx';
 import Dashboard from './components/Dashboard.jsx';
@@ -15,7 +15,7 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<Home/>}></Route>
+          <Route path='/' element={<Landing/>}></Route>
           <Route path='/auth/login' element={<Login/>}></Route>
           <Route path='/auth/signup' element={<Signup/>}></Route>
           <Route path='/dashboard' element={<Dashboard/>}></Route>

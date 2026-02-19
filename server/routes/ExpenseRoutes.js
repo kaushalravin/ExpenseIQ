@@ -5,6 +5,7 @@ const validateExpense = require('../validators/expenseMiddleware');
 const AppError = require('../utilities/AppError');
 const wrapAsync = require('../utilities/WrapAsync');
 const { isLoggedIn, isAuthorized } = require('../validators/userMiddleware');
+const  parseExpenseWithAI  = require('../services/categorizeService');
 const router = express.Router();
 
 const APIBASE = `http://localhost:3000`;
@@ -23,6 +24,21 @@ router.post('/api/expenses', isLoggedIn, validateExpense, wrapAsync(async (req, 
     console.log(expense);
     res.json({ success: true, data: { expenses: expense, message: "successfully addded an expense" } })
     return;
+}))
+
+//for ai service
+router.post('/api/expenses/parse-expense',isLoggedIn,wrapAsync(async(req,res)=>{
+    const {text}=req.body;
+    if(!text){
+        throw new AppError("No text provided",400);
+    }
+
+    const expenseData = await parseExpenseWithAI(text);
+
+    
+    res.json({success:true,data:{expense:expenseData,message:"successfully parsed expense"}});
+
+
 }))
 
 

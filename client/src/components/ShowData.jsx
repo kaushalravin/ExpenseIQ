@@ -64,7 +64,7 @@ export default function ShowData({ data, handleDelete, handleUpdate}) {
                     <TableBody>
                         {data.map((row, index) => (
                             <TableRow
-                                key={row._id || index}
+                                key={row.name || index}
                                 sx={{ 
                                     '&:last-child td, &:last-child th': { border: 0 },
                                     '&:hover': {
@@ -86,7 +86,7 @@ export default function ShowData({ data, handleDelete, handleUpdate}) {
                                         color: '#64748b !important'
                                     }}
                                 >
-                                    {row.date ? String(row.date).split("T")[0] : ""}
+                                    {row.date}
                                 </TableCell>
                                 <TableCell 
                                     align="right"
