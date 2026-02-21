@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const ExpenseModel = require('../models/Expense');
 //const Expense = require('../models/Expense');
 const validateExpense = require('../validators/expenseMiddleware');
@@ -42,8 +43,12 @@ router.post('/api/expenses/parse-expense',isLoggedIn,wrapAsync(async(req,res)=>{
 }))
 
 
-router.get('/api/expenses', isLoggedIn, wrapAsync(async (req, res) => {
-    const expenses = await ExpenseModel.find({ userId: req.user.id }).sort({ date: -1 });
+router.get('/api/expenses/', isLoggedIn, wrapAsync(async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = 25;
+    const skip = (page - 1) * limit;
+
+    const expenses = await ExpenseModel.find({ userId: req.user.id }).sort({ date: -1 }).skip(skip).limit(limit);
     res.json({ success: true, data: { expenses: expenses, message: "successfully retrieved expenses" } });
     return;
 }))
@@ -93,8 +98,11 @@ router.post('/api/expenses/bulk',isLoggedIn,wrapAsync(async(req,res,next)=>{
 
 //filter route
 
-router.get("/api/expenses/filter", isLoggedIn, wrapAsync(async (req, res, next) => {
+router.get("/api/expenses/filter/", isLoggedIn, wrapAsync(async (req, res, next) => {
 
+    const page=parseInt(req.query.page)||1;
+    const limit=25;
+    const skip=(page-1)*limit;
     const { category, paymentMode, from, to, minAmount, maxAmount, note } = req.query;
     console.log(minAmount+"\t"+maxAmount+"\t"+note)
     const query = {};
@@ -134,9 +142,32 @@ router.get("/api/expenses/filter", isLoggedIn, wrapAsync(async (req, res, next) 
         query.note = { $regex: note, $options: "i" };
     }
 
-    const expenses = await ExpenseModel.find(query).sort({ date: -1 });
+    const aggMatch = {
+        ...query,
+        userId: mongoose.Types.ObjectId.isValid(req.user.id)
+            ? new mongoose.Types.ObjectId(req.user.id)
+            : query.userId
+    };
 
-    res.json({ success: true, data: { expenses: expenses, message: "successfully filtered expenses" } });
+    const [expenses, statsAgg] = await Promise.all([
+        ExpenseModel.find(query).sort({ date: -1 }).skip(skip).limit(limit),
+        ExpenseModel.aggregate([
+            { $match: aggMatch },
+            {
+                $group: {
+                    _id: null,
+                    sum: { $sum: "$amount" },
+                    average: { $avg: "$amount" }
+                }
+            }
+        ])
+    ]);
+
+    const stats = statsAgg?.[0]
+        ? { sum: statsAgg[0].sum || 0, average: statsAgg[0].average || 0 }
+        : { sum: 0, average: 0 };
+
+    res.json({ success: true, data: { expenses: expenses, stats, message: "successfully filtered expenses" } });
 
 }));
 

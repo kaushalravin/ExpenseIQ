@@ -25,6 +25,11 @@ export default function Dashboard() {
     const [isAddVisible, setIsAddVisible] = useState(false);
     const [isUpdateVisible, setIsUpdateVisible] = useState(false);
     const [updateData, setUpdateData] = useState(null);
+    const [page,setPage]=useState(1);
+    const [sum,setSum]=useState(0);
+    const [average,setAverage]=useState(0);
+    
+      
 
     // AI Parsing state
     const [isAiModalVisible, setIsAiModalVisible] = useState(false);
@@ -48,6 +53,14 @@ export default function Dashboard() {
 
     //speech to text states
     const { isListening, startListening, stopListening } = useSpeechToText();
+
+      useEffect(()=>{
+            const total=data.reduce((sum,item)=>{
+                return sum+item.amount;
+            },0)
+            setSum(total);
+            setAverage(data.length>0?total/data.length:0);
+        })
 
     useEffect(() => {
         if (!csvData) {
@@ -113,7 +126,11 @@ export default function Dashboard() {
     useEffect(() => {
         async function getData() {
             try {
-                const newdata = await axios.get("http://localhost:3000/api/expenses");
+                const newdata = await axios.get("http://localhost:3000/api/expenses",{
+                    params:{
+                        page:page
+                    }
+                });
                 setData(newdata.data.data.expenses);
             } catch (err) {
                 console.log(err);
@@ -121,7 +138,7 @@ export default function Dashboard() {
         }
 
         getData();
-    }, [refresh])
+    }, [refresh, page]);
 
     // Fetch analytics data
     useEffect(() => {
@@ -370,7 +387,7 @@ export default function Dashboard() {
                             </div>
                         </div>
                         <div className="section-content">
-                            <ShowData data={data} handleDelete={handleDelete} handleUpdate={handleUpdate}></ShowData>
+                            <ShowData data={data} handleDelete={handleDelete} handleUpdate={handleUpdate} setPage={setPage} page={page} stats={{sum,average}}></ShowData>
                         </div>
                     </section>
                 </div>

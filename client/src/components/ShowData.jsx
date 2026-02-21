@@ -6,12 +6,35 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { useState } from "react";
+import { useMemo } from "react";
+import Card from "./Card.jsx";
 import "../styles/showdata.css"
 
-export default function ShowData({ data, handleDelete, handleUpdate}) {
+
+
+export default function ShowData({ data, handleDelete, handleUpdate, setPage, page, stats }) {
+
+    const computedStats = useMemo(() => {
+        if (stats && typeof stats.sum === "number" && typeof stats.average === "number") {
+            return stats;
+        }
+
+        const sum = (Array.isArray(data) ? data : []).reduce((runningTotal, item) => {
+            const amount = typeof item?.amount === "number" ? item.amount : Number(item?.amount) || 0;
+            return runningTotal + amount;
+        }, 0);
+
+        const count = Array.isArray(data) ? data.length : 0;
+        const average = count > 0 ? sum / count : 0;
+        return { sum, average };
+    }, [data, stats]);
+
     return (
         <div className="show-data-container">
+            <div className="showdata-cards-row">
+                <Card message="Total Spend" value={Number(computedStats.sum).toFixed(2)} />
+                <Card message="Average Spend" value={Number(computedStats.average).toFixed(2)} />
+            </div>
             <TableContainer 
                 component={Paper}
                 sx={{
@@ -160,6 +183,13 @@ export default function ShowData({ data, handleDelete, handleUpdate}) {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <div className="pagination">
+                <button onClick={() => setPage(prev => Math.max(prev - 1, 1))} disabled={page === 1}>
+                    Previous
+                </button>
+                <span>Page {page}</span>
+                <button onClick={() => setPage(prev => prev + 1)}>Next</button>
+            </div>
 
             {data.length === 0 && (
                 <div className="empty-state">

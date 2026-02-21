@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "./Navbar";
 import FilterForm from "./FilterForm";
@@ -11,29 +11,44 @@ import "../styles/filter.css";
 export default function Filter() {
     const [message, setMessage] = useState("");
     const [data, setData] = useState([]);
+    const [stats, setStats] = useState(null);
     const [updateData, setUpdateData] = useState(null);
     const [isVisible, setIsVisible] = useState(false);
     const [excelLink, setExcelLink] = useState(null);
+    const [page,setPage]=useState(1);
+    const [activeFilters, setActiveFilters] = useState(null);
 
     // 🔹 Fetch filtered data
-    const handleSubmit = async (formData) => {
-        try {
-            const res = await axios.get(
-                "http://localhost:3000/api/expenses/filter",
-                { params: formData }
-            );
-
-            if (res.data.success) {
-                setData(res.data.data.expenses);
-                setMessage(res.data.data.message);
-            } else {
-                setMessage("Something went wrong");
-            }
-        } catch (err) {
-            console.error(err);
-            setMessage("Error fetching data");
-        }
+    const handleSubmit = (formData) => {
+        setActiveFilters(formData);
+        setPage(1);
     };
+
+    useEffect(() => {
+        if (!activeFilters) return;
+
+        const fetchFilteredData = async () => {
+            try {
+                const res = await axios.get(
+                    "http://localhost:3000/api/expenses/filter",
+                    { params: { ...activeFilters, page } }
+                );
+
+                if (res.data.success) {
+                    setData(res.data.data.expenses);
+                    setStats(res.data.data.stats || null);
+                    setMessage(res.data.data.message);
+                } else {
+                    setMessage("Something went wrong");
+                }
+            } catch (err) {
+                console.error(err);
+                setMessage("Error fetching data");
+            }
+        };
+
+        fetchFilteredData();
+    }, [activeFilters, page]);
 
     // 🔹 Delete expense
     const handleDelete = async (id) => {
@@ -181,6 +196,9 @@ export default function Filter() {
                                 data={data}
                                 handleDelete={handleDelete}
                                 handleUpdate={handleUpdate}
+                                setPage={setPage}
+                                page={page}
+                                stats={stats}
                             />
                         </div>
                     </section>
