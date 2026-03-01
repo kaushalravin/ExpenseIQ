@@ -61,5 +61,6 @@ jobs:
         with:
           app-name: 'ExpenseIQ'
           slot-name: 'Production'
-          package: .
+          package: ./server
+
           
