@@ -5,6 +5,7 @@ const express=require('express');
 const cors=require('cors');
 const mongoose=require('mongoose');
 const cookieParser = require("cookie-parser");
+const path = require("path");
 
 
 
@@ -20,7 +21,7 @@ const AppError = require('./utilities/AppError');
 const app=express();
 
 
-
+const PORT=process.env.PORT||3000
 
 mongoose
   .connect(process.env.MONGO_URI)
@@ -33,13 +34,15 @@ mongoose
 
 
 app.use(cors({
-    origin:"http://localhost:5173",
+    origin:process.env.FRONTEND_URL,
     credentials:true
 }));
+
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
+
 
 app.use(ExpenseRouteHandlers);
 app.use(UserRouteHandlers);
@@ -58,13 +61,17 @@ app.use((err,req,res,next)=>{
  if(!err.message){
   err.message='something went wrong';
  }
- res.json({success:false,error: {
+ res.status(statusCode).json({success:false,error: {
     message: err.message,
     statusCode:statusCode
   }})
  
 })
 
-app.listen(process.env.PORT,()=>{
-    console.log("server is running in localhost 3000");
+
+
+
+app.listen(PORT,()=>{
+    console.log("server is running in localhost port "+PORT);
 })
+

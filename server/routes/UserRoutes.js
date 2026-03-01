@@ -88,5 +88,15 @@ router.post("/api/logout",isLoggedIn, (req, res) => {
   });
 });
 
+// check auth / current user
+router.get("/api/me", isLoggedIn, (req, res) => {
+  res.json({
+    success: true,
+    data: {
+      user: req.user
+    }
+  });
+});
+
 
 module.exports = router;
