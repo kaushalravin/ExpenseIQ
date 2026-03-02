@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { API_BASE } from "../config/api.js";
 import FormFields from "./FormFields";
 import UpdatePopup from "./UpdatePopup";
 import ShowData from "./ShowData";
@@ -54,13 +55,15 @@ export default function Dashboard() {
     //speech to text states
     const { isListening, startListening, stopListening } = useSpeechToText();
 
-      useEffect(()=>{
-            const total=data.reduce((sum,item)=>{
-                return sum+item.amount;
-            },0)
-            setSum(total);
-            setAverage(data.length>0?total/data.length:0);
-        })
+    useEffect(() => {
+        const total = (Array.isArray(data) ? data : []).reduce((runningTotal, item) => {
+            const amount = typeof item?.amount === "number" ? item.amount : Number(item?.amount) || 0;
+            return runningTotal + amount;
+        }, 0);
+
+        setSum(total);
+        setAverage((Array.isArray(data) ? data.length : 0) > 0 ? total / data.length : 0);
+    }, [data]);
 
     useEffect(() => {
         if (!csvData) {
@@ -98,7 +101,7 @@ export default function Dashboard() {
             }
 
             const result = await axios.post(
-                "http://localhost:3000/api/expenses/bulk",
+                `${API_BASE}/api/expenses/bulk`,
                 { expenses: validatedCsvRows }
             );
 
@@ -126,7 +129,7 @@ export default function Dashboard() {
     useEffect(() => {
         async function getData() {
             try {
-                const newdata = await axios.get("http://localhost:3000/api/expenses",{
+                const newdata = await axios.get(`${API_BASE}/api/expenses`,{
                     params:{
                         page:page
                     }
@@ -146,13 +149,13 @@ export default function Dashboard() {
             setAnalyticsLoading(true);
             try {
                 const [pieRes, barRes, lineRes] = await Promise.all([
-                    axios.get("http://localhost:3000/api/analytics/category", {
+                    axios.get(`${API_BASE}/api/analytics/category`, {
                         params: dateFilter
                     }),
-                    axios.get("http://localhost:3000/api/analytics/paymentMode", {
+                    axios.get(`${API_BASE}/api/analytics/paymentMode`, {
                         params: dateFilter
                     }),
-                    axios.get("http://localhost:3000/api/analytics/month")
+                    axios.get(`${API_BASE}/api/analytics/month`)
                 ]);
 
                 setPieData(pieRes.data.data);
@@ -177,7 +180,7 @@ export default function Dashboard() {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:3000/api/expenses/${id}`);
+            await axios.delete(`${API_BASE}/api/expenses/${id}`);
             setData(prev => prev.filter(item => item._id !== id));
             setMessage("Expense deleted successfully");
         } catch (err) {
@@ -199,7 +202,7 @@ export default function Dashboard() {
         try {
             if (!updateData) return;
             const res = await axios.put(
-                `http://localhost:3000/api/expenses/${updateData._id}`,
+                `${API_BASE}/api/expenses/${updateData._id}`,
                 {
                     ...updateData,
                     amount: Number(updateData.amount)
@@ -229,7 +232,7 @@ export default function Dashboard() {
         setAiParsing(true);
         try {
             const res = await axios.post(
-                "http://localhost:3000/api/expenses/parse-expense",
+                `${API_BASE}/api/expenses/parse-expense`,
                 { text: aiInputText }
             );
 
@@ -274,9 +277,7 @@ export default function Dashboard() {
                     </div>
                     <div className="header-center">
                         <div className="header-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                            <span className="header-icon-rupee">₹</span>
                         </div>
                         <div>
                             <h1 className="header-title">Expense Dashboard</h1>

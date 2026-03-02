@@ -11,9 +11,7 @@ export default function Landing() {
                 <nav className="landing-nav">
                     <div className="nav-brand">
                         <div className="nav-logo">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                            <span style={{fontSize: '1.5rem', fontWeight: 800, color: 'white', lineHeight: 1}}>₹</span>
                         </div>
                         <span className="nav-title">ExpenseIQ</span>
                     </div>
@@ -212,39 +210,19 @@ export default function Landing() {
 
             {/* Footer */}
             <footer className="landing-footer">
-                <div className="footer-content">
-                    <div className="footer-brand">
+                <div className="footer-inner">
+                    <div className="footer-brand-row">
                         <div className="footer-logo">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span>ExpenseIQ</span>
+                            <span className="footer-rupee">₹</span>
+                            <span className="footer-logo-name">ExpenseIQ</span>
                         </div>
                         <p className="footer-tagline">Smart expense tracking for everyone</p>
                     </div>
-                    <div className="footer-links">
-                        <div className="footer-column">
-                            <h4>Product</h4>
-                            <a href="#features">Features</a>
-                            <a href="#" onClick={(e) => { e.preventDefault(); navigate("/auth/signup"); }}>Pricing</a>
-                            <a href="#" onClick={(e) => { e.preventDefault(); navigate("/dashboard"); }}>Dashboard</a>
-                        </div>
-                        <div className="footer-column">
-                            <h4>Company</h4>
-                            <a href="#">About</a>
-                            <a href="#">Blog</a>
-                            <a href="#">Careers</a>
-                        </div>
-                        <div className="footer-column">
-                            <h4>Support</h4>
-                            <a href="#">Help Center</a>
-                            <a href="#">Contact</a>
-                            <a href="#">Privacy</a>
-                        </div>
+                    <div className="footer-bottom">
+                        <span>&copy; 2026 ExpenseIQ. All rights reserved.</span>
+                        <span className="footer-dot">&bull;</span>
+                        <span>Built for India</span>
                     </div>
-                </div>
-                <div className="footer-bottom">
-                    <p>&copy; 2026 ExpenseIQ. All rights reserved.</p>
                 </div>
             </footer>
         </div>

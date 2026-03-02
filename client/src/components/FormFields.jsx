@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { API_BASE } from "../config/api.js";
 import {handleCsv} from "../FileHandlers/handleCsv.js";
 import {handleXlsx} from "../FileHandlers/handleXlsx.js";
 import "../styles/formfields.css";
@@ -46,13 +47,13 @@ export default function FormFields({ setRefresh, editingExpense, onClose,setCsvD
             // Check if editingExpense has an _id - only then it's a real update operation
             if (editingExpense && editingExpense._id) {
                 res = await axios.put(
-                    `http://localhost:3000/api/expenses/${editingExpense._id}`,
+                    `${API_BASE}/api/expenses/${editingExpense._id}`,
                     formData
                 );
             } else {
                 // Either no editingExpense, or it's AI-parsed data without _id (new expense)
                 res = await axios.post(
-                    "http://localhost:3000/api/expenses",
+                    `${API_BASE}/api/expenses`,
                     {
                         ...formData,
                         amount: Number(formData.amount)

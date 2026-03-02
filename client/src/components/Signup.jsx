@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import '../styles/login.css'
+import { API_BASE } from "../config/api.js";
 
 axios.defaults.withCredentials = true;
 
@@ -28,7 +29,7 @@ export default function Signup() {
 
         try {
             const res = await axios.post(
-                "http://localhost:3000/api/signup",
+                `${API_BASE}/api/signup`,
                 formData
             );
 
@@ -51,9 +52,7 @@ export default function Signup() {
                 <div className="branding-section">
                     <div className="brand-content">
                         <div className="brand-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                            <span style={{fontSize: '2.5rem', fontWeight: 800, color: 'white', lineHeight: 1}}>₹</span>
                         </div>
                         <h1 className="brand-title">Expense Tracker</h1>
                         <p className="brand-tagline">Your smart companion for financial clarity and peace of mind</p>

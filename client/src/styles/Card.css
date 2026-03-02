@@ -54,7 +54,7 @@
 }
 
 /* Positive percentage change */
-.card h3:nth-of-type(2):not([class]) {
+.card h3.positive-change {
   color: #059669;
   background: #d1fae5;
 }

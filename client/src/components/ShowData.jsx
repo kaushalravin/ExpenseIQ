@@ -14,6 +14,10 @@ import "../styles/showdata.css"
 
 export default function ShowData({ data, handleDelete, handleUpdate, setPage, page, stats }) {
 
+    for(let i = 0; i < data.length; i++) {
+        data[i].date=data[i].date.substring(0,10);
+    }
+
     const computedStats = useMemo(() => {
         if (stats && typeof stats.sum === "number" && typeof stats.average === "number") {
             return stats;

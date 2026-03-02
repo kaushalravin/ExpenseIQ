@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { API_BASE } from "../config/api.js";
 import Card from "./Card.jsx";
 import "../styles/CardParent.css";
 
@@ -32,16 +33,16 @@ export default function CardParent({refresh}) {
                     ttyRes,
                     hpmRes
                 ] = await Promise.all([
-                    axios.get("http://localhost:3000/api/analytics/Expense-month"),
-                    axios.get("http://localhost:3000/api/analytics/Expense-month-prev"),
-                    axios.get("http://localhost:3000/api/analytics/Expense-year"),
-                    axios.get("http://localhost:3000/api/analytics/Expense-year-prev"),
-                    axios.get("http://localhost:3000/api/analytics/totalExpense"),
-                    axios.get("http://localhost:3000/api/analytics/highest-category-year"),
-                    axios.get("http://localhost:3000/api/analytics/highest-expense-year"),
-                    axios.get("http://localhost:3000/api/analytics/transactions-month"),
-                    axios.get("http://localhost:3000/api/analytics/transactions-year"),
-                    axios.get("http://localhost:3000/api/analytics/highest-paymentMode-year")
+                    axios.get(`${API_BASE}/api/analytics/Expense-month`),
+                    axios.get(`${API_BASE}/api/analytics/Expense-month-prev`),
+                    axios.get(`${API_BASE}/api/analytics/Expense-year`),
+                    axios.get(`${API_BASE}/api/analytics/Expense-year-prev`),
+                    axios.get(`${API_BASE}/api/analytics/totalExpense`),
+                    axios.get(`${API_BASE}/api/analytics/highest-category-year`),
+                    axios.get(`${API_BASE}/api/analytics/highest-expense-year`),
+                    axios.get(`${API_BASE}/api/analytics/transactions-month`),
+                    axios.get(`${API_BASE}/api/analytics/transactions-year`),
+                    axios.get(`${API_BASE}/api/analytics/highest-paymentMode-year`)
                 ]);
                
 

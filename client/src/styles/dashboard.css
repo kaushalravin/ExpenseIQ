@@ -50,17 +50,24 @@
 .header-icon {
   width: 48px;
   height: 48px;
-  background: #3b82f6;
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .header-icon svg {
-  width: 28px;
-  height: 28px;
-  color: white;
+  width: 24px;
+  height: 24px;
+  color: #3b82f6;
+}
+
+.header-icon-rupee {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .header-title {
