@@ -58,8 +58,8 @@ router.post('/api/login', validateUserLogin, wrapAsync(async (req, res) => {
     //sending the token using cookie
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: "strict",
-      secure: false // true in production
+      sameSite: "none",
+      secure: true // true in production
     });
 
     res.json({
@@ -76,8 +76,8 @@ router.post('/api/login', validateUserLogin, wrapAsync(async (req, res) => {
 router.post("/api/logout",isLoggedIn, (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
-    sameSite: "strict",
-    secure: false // true in production
+    sameSite: "none",
+    secure: true // true in production
   });
 
   res.json({
