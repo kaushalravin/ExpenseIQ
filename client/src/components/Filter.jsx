@@ -72,7 +72,7 @@ export default function Filter() {
         e.preventDefault();
 
         try {
-            const { _id, __v, ...cleanData } = updateData;
+            const { _id, __v, createdAt, updatedAt, userId, ...cleanData } = updateData;
             console.log(cleanData);
             const res = await axios.put(
                 `${API_BASE}/api/expenses/${updateData._id}`,

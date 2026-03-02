@@ -13,4 +13,10 @@
     "jwt-decode": "^4.0.0",
     "mongoose": "^9.0.2"
   }
+  ,
+  
+  "scripts": {
+    "start": "node index.js"
+  }
+
 }

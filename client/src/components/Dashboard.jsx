@@ -201,11 +201,12 @@ export default function Dashboard() {
         e.preventDefault();
         try {
             if (!updateData) return;
+            const { _id, __v, createdAt, updatedAt, userId, ...cleanData } = updateData;
             const res = await axios.put(
                 `${API_BASE}/api/expenses/${updateData._id}`,
                 {
-                    ...updateData,
-                    amount: Number(updateData.amount)
+                    ...cleanData,
+                    amount: Number(cleanData.amount)
                 }
             );
 
