@@ -33,7 +33,7 @@ mongoose
   });
 
 
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
+app.use(cors({ origin: "https://expenseiq-kohl.vercel.app", credentials: true }));
 
 
 app.use(express.urlencoded({ extended: true }));
