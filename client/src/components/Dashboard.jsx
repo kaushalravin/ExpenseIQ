@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { API_BASE } from "../config/api.js";
+import { VITE_API_BASE } from "../config/api.js";
 import FormFields from "./FormFields";
 import UpdatePopup from "./UpdatePopup";
 import ShowData from "./ShowData";
@@ -129,7 +129,7 @@ export default function Dashboard() {
     useEffect(() => {
         async function getData() {
             try {
-                const newdata = await axios.get(`${API_BASE}/api/expenses`,{
+                const newdata = await axios.get(`${VITE_API_BASE}/api/expenses`,{
                     params:{
                         page:page
                     }
@@ -149,13 +149,13 @@ export default function Dashboard() {
             setAnalyticsLoading(true);
             try {
                 const [pieRes, barRes, lineRes] = await Promise.all([
-                    axios.get(`${API_BASE}/api/analytics/category`, {
+                    axios.get(`${VITE_API_BASE}/api/analytics/category`, {
                         params: dateFilter
                     }),
-                    axios.get(`${API_BASE}/api/analytics/paymentMode`, {
+                    axios.get(`${VITE_API_BASE}/api/analytics/paymentMode`, {
                         params: dateFilter
                     }),
-                    axios.get(`${API_BASE}/api/analytics/month`)
+                    axios.get(`${VITE_API_BASE}/api/analytics/month`)
                 ]);
 
                 setPieData(pieRes.data.data);
@@ -180,7 +180,7 @@ export default function Dashboard() {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`${API_BASE}/api/expenses/${id}`);
+            await axios.delete(`${VITE_API_BASE}/api/expenses/${id}`);
             setData(prev => prev.filter(item => item._id !== id));
             setMessage("Expense deleted successfully");
         } catch (err) {
@@ -203,7 +203,7 @@ export default function Dashboard() {
             if (!updateData) return;
             const { _id, __v, createdAt, updatedAt, userId, ...cleanData } = updateData;
             const res = await axios.put(
-                `${API_BASE}/api/expenses/${updateData._id}`,
+                `${VITE_API_BASE}/api/expenses/${updateData._id}`,
                 {
                     ...cleanData,
                     amount: Number(cleanData.amount)
@@ -233,7 +233,7 @@ export default function Dashboard() {
         setAiParsing(true);
         try {
             const res = await axios.post(
-                `${API_BASE}/api/expenses/parse-expense`,
+                `${VITE_API_BASE}/api/expenses/parse-expense`,
                 { text: aiInputText }
             );
 

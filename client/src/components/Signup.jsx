@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import '../styles/login.css'
-import { API_BASE } from "../config/api.js";
+import { VITE_API_BASE } from "../config/api.js";
 
 axios.defaults.withCredentials = true;
 
@@ -29,7 +29,7 @@ export default function Signup() {
 
         try {
             const res = await axios.post(
-                `${API_BASE}/api/signup`,
+                `${VITE_API_BASE}/api/signup`,
                 formData
             );
 

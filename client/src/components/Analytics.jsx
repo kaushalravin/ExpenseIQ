@@ -4,7 +4,7 @@ import BarChart from "./charts/BarChart";
 import PieChart from "./charts/PieChart";
 import LineChart from "./charts/LineChart";
 import axios from "axios";
-import { API_BASE } from "../config/api.js";
+import { VITE_API_BASE } from "../config/api.js";
 
 export default function Analytics() {
     const [pieData, setPieData] = useState([]);
@@ -29,13 +29,13 @@ export default function Analytics() {
         setLoading(true);
         try {
             const [pieRes, barRes, lineRes] = await Promise.all([
-                axios.get(`${API_BASE}/api/analytics/category`, {
+                axios.get(`${VITE_API_BASE}/api/analytics/category`, {
                     params: formData
                 }),
-                axios.get(`${API_BASE}/api/analytics/paymentMode`, {
+                axios.get(`${VITE_API_BASE}/api/analytics/paymentMode`, {
                     params: formData
                 }),
-                axios.get(`${API_BASE}/api/analytics/month`)
+                axios.get(`${VITE_API_BASE}/api/analytics/month`)
             ]);
 
             setPieData(pieRes.data.data);

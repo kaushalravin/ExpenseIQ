@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { API_BASE } from "../config/api.js";
+import { VITE_API_BASE } from "../config/api.js";
 import Navbar from "./Navbar";
 import FilterForm from "./FilterForm";
 import ShowData from "./ShowData";
@@ -31,7 +31,7 @@ export default function Filter() {
         const fetchFilteredData = async () => {
             try {
                 const res = await axios.get(
-                    `${API_BASE}/api/expenses/filter/`,
+                    `${VITE_API_BASE}/api/expenses/filter/`,
                     { params: { ...activeFilters, page } }
                 );
 
@@ -54,7 +54,7 @@ export default function Filter() {
     // 🔹 Delete expense
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`${API_BASE}/api/expenses/${id}`);
+            await axios.delete(`${VITE_API_BASE}/api/expenses/${id}`);
             setData(prev => prev.filter(item => item._id !== id));
         } catch (err) {
             console.error(err);
@@ -75,7 +75,7 @@ export default function Filter() {
             const { _id, __v, createdAt, updatedAt, userId, ...cleanData } = updateData;
             console.log(cleanData);
             const res = await axios.put(
-                `${API_BASE}/api/expenses/${updateData._id}`,
+                `${VITE_API_BASE}/api/expenses/${updateData._id}`,
                 cleanData
             );
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { API_BASE } from "../config/api.js";
+import { VITE_API_BASE } from "../config/api.js";
 import Card from "./Card.jsx";
 import "../styles/CardParent.css";
 
@@ -33,16 +33,16 @@ export default function CardParent({refresh}) {
                     ttyRes,
                     hpmRes
                 ] = await Promise.all([
-                    axios.get(`${API_BASE}/api/analytics/Expense-month`),
-                    axios.get(`${API_BASE}/api/analytics/Expense-month-prev`),
-                    axios.get(`${API_BASE}/api/analytics/Expense-year`),
-                    axios.get(`${API_BASE}/api/analytics/Expense-year-prev`),
-                    axios.get(`${API_BASE}/api/analytics/totalExpense`),
-                    axios.get(`${API_BASE}/api/analytics/highest-category-year`),
-                    axios.get(`${API_BASE}/api/analytics/highest-expense-year`),
-                    axios.get(`${API_BASE}/api/analytics/transactions-month`),
-                    axios.get(`${API_BASE}/api/analytics/transactions-year`),
-                    axios.get(`${API_BASE}/api/analytics/highest-paymentMode-year`)
+                    axios.get(`${VITE_API_BASE}/api/analytics/Expense-month`),
+                    axios.get(`${VITE_API_BASE}/api/analytics/Expense-month-prev`),
+                    axios.get(`${VITE_API_BASE}/api/analytics/Expense-year`),
+                    axios.get(`${VITE_API_BASE}/api/analytics/Expense-year-prev`),
+                    axios.get(`${VITE_API_BASE}/api/analytics/totalExpense`),
+                    axios.get(`${VITE_API_BASE}/api/analytics/highest-category-year`),
+                    axios.get(`${VITE_API_BASE}/api/analytics/highest-expense-year`),
+                    axios.get(`${VITE_API_BASE}/api/analytics/transactions-month`),
+                    axios.get(`${VITE_API_BASE}/api/analytics/transactions-year`),
+                    axios.get(`${VITE_API_BASE}/api/analytics/highest-paymentMode-year`)
                 ]);
                
 

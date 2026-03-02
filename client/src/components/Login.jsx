@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import '../styles/login.css'
 import { clearAuthCache } from "../utilities/auth";
-import { API_BASE } from "../config/api.js";
+import { VITE_API_BASE } from "../config/api.js";
 
 axios.defaults.withCredentials = true;
 
@@ -30,7 +30,7 @@ export default function Login() {
 
         try {
             const res = await axios.post(
-                `${API_BASE}/api/login`,
+                `${VITE_API_BASE}/api/login`,
                 formData
             );
 

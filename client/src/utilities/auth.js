@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_BASE } from "../config/api.js";
+import { VITE_API_BASE } from "../config/api.js";
 
 axios.defaults.withCredentials = true;
 
@@ -18,7 +18,7 @@ export async function checkAuth({ force = false } = {}) {
   }
 
   try {
-    const res = await axios.get(`${API_BASE}/api/me`);
+    const res = await axios.get(`${VITE_API_BASE}/api/me`);
     cachedAuth = Boolean(res?.data?.success);
   } catch {
     cachedAuth = false;

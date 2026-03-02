@@ -12,7 +12,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/navbar.css";
 import { clearAuthCache } from "../utilities/auth";
-import { API_BASE } from "../config/api.js";
+import { VITE_API_BASE } from "../config/api.js";
 
 export default function Navbar({ setMessage }) {
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ export default function Navbar({ setMessage }) {
 
   const handleLogout = async () => {
     try {
-      const res = await axios.post(`${API_BASE}/api/logout`);
+      const res = await axios.post(`${VITE_API_BASE}/api/logout`);
 
       if (res.data.success) {
         clearAuthCache();
