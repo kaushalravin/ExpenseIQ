@@ -33,7 +33,7 @@ mongoose
   });
 
 
-app.use(cors());
+app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 
 
 app.use(express.urlencoded({ extended: true }));
@@ -49,12 +49,9 @@ app.use(ExpenseAnalyticsHandlers);
 //CRUD OPERATIONS FOR EXPENSE MODEL
 
 
-//console.log("Static path:", path.join(__dirname, "dist"));
-app.use(express.static(path.join(__dirname, "dist")));
-
-app.use((req, res) => {
-  res.sendFile(path.join(__dirname, "dist/index.html"));
-});
+app.all('*wildcard',(req,res,next)=>{
+  throw new AppError('page not found',404);
+})
 
 
 app.use((err,req,res,next)=>{
