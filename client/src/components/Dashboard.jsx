@@ -101,7 +101,7 @@ export default function Dashboard() {
             }
 
             const result = await axios.post(
-                `${API_BASE}/api/expenses/bulk`,
+                `${VITE_API_BASE}/api/expenses/bulk`,
                 { expenses: validatedCsvRows }
             );
 

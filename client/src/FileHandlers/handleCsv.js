@@ -6,7 +6,6 @@ function handleCsv(file,setCsvData){
             skipEmptyLines: true,
             complete: (result) => {
                 setCsvData(result.data);
-                evt.target.value = "";
             },
             error: (err) => {
                 console.error(err);
