@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/navbar.css";
-import { clearAuthCache } from "../utilities/auth";
+import { clearAuthCache, clearAuthToken } from "../utilities/auth";
 import { VITE_API_BASE } from "../config/api.js";
 
 export default function Navbar({ setMessage }) {
@@ -27,8 +27,8 @@ export default function Navbar({ setMessage }) {
       const res = await axios.post(`${VITE_API_BASE}/api/logout`);
 
       if (res.data.success) {
+        clearAuthToken();
         clearAuthCache();
-        localStorage.removeItem("token");
         setMessage?.("Logged out successfully");
         navigate("/auth/login", { replace: true });
       }

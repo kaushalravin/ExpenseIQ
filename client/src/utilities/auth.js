@@ -3,6 +3,29 @@ import { VITE_API_BASE } from "../config/api.js";
 
 axios.defaults.withCredentials = true;
 
+const TOKEN_KEY = "token";
+
+export function setAuthToken(token) {
+  try {
+    if (token) {
+      localStorage.setItem(TOKEN_KEY, token);
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+    }
+  } finally {
+    clearAuthCache();
+  }
+}
+
+export function clearAuthToken() {
+  try {
+    localStorage.removeItem(TOKEN_KEY);
+  } catch {
+    // ignore
+  }
+  delete axios.defaults.headers.common.Authorization;
+  clearAuthCache();
+}
+
 let cachedAuth = null;
 let cachedAt = 0;
 const AUTH_CACHE_MS = 30_000;

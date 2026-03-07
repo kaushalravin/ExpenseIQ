@@ -5,6 +5,17 @@ const loginSchema = require('./userValidation').LoginSchema;
 const ExpenseModel=require('../models/Expense');
 const AppError = require('../utilities/AppError');
 
+const getTokenFromRequest = (req) => {
+    const cookieToken = req?.cookies?.token;
+    if (cookieToken) return cookieToken;
+
+    const authHeader = req.get("authorization") || req.get("Authorization");
+    if (!authHeader) return null;
+
+    const match = String(authHeader).match(/^Bearer\s+(.+)$/i);
+    return match ? match[1] : null;
+};
+
 const validateUser = (req, res, next) => {
     try {
         const { error } = userSchema.validate(req.body);
@@ -42,7 +53,7 @@ const validateUserLogin = (req, res, next) => {
 }
 
 const isLoggedIn = (req, res, next) => {
-    const token = req.cookies.token;
+    const token = getTokenFromRequest(req);
     
     if (!token) {
         return next(new AppError("You are not authorized", 401));
@@ -59,7 +70,7 @@ const isLoggedIn = (req, res, next) => {
 
 
 const isAuthorized = async (req, res, next) => {
-  const token = req.cookies.token;
+    const token = getTokenFromRequest(req);
 
   if (!token) {
     return next(new AppError("You are not authorized", 401));

@@ -65,7 +65,8 @@ router.post('/api/login', validateUserLogin, wrapAsync(async (req, res) => {
     res.json({
       success: true,
       data: {
-        message: "Login successful"
+        message: "Login successful",
+        token
       }
     });
 }

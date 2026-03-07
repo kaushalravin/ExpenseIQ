@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import '../styles/login.css'
-import { clearAuthCache } from "../utilities/auth";
+import { clearAuthCache, setAuthToken } from "../utilities/auth";
 import { VITE_API_BASE } from "../config/api.js";
 
 axios.defaults.withCredentials = true;
@@ -36,6 +36,8 @@ export default function Login() {
 
             if (res.data.success) {
                 clearAuthCache();
+                const token = res?.data?.data?.token;
+                if (token) setAuthToken(token);
                 const fromPath = location.state?.from?.pathname;
                 navigate(fromPath || "/dashboard", { replace: true });
             } else {
